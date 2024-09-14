@@ -10,3 +10,5 @@
 #php bin/console make:entity
 #php bin/console make:controller    
 #php bin/console make:form
+
+#composer require symfony/apache-pack
