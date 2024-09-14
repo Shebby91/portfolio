@@ -1,0 +1,54 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www/html
+    environment:
+      - APP_ENV=${APP_ENV}
+      - APP_DEBUG=${APP_DEBUG}
+      - DATABASE_URL=${DATABASE_URL}
+    ports:
+      - "80:80"
+    depends_on:
+      - db_prod
+      - db_test
+      - mailer
+
+  db_prod:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: prodpassword
+      MYSQL_DATABASE: prodapp
+      MYSQL_USER: produser
+      MYSQL_PASSWORD: prodpassword
+    volumes:
+      - db_prod_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+
+  db_test:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: testpassword
+      MYSQL_DATABASE: testapp
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: testpassword
+    volumes:
+      - db_test_data:/var/lib/mysql
+    ports:
+      - "3308:3306"
+
+  mailer:
+    image: axllent/mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+
+volumes:
+  db_prod_data:
+  db_test_data:
