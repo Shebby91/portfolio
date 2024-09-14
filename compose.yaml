@@ -10,7 +10,7 @@ services:
       - APP_DEBUG=${APP_DEBUG}
       - DATABASE_URL=${DATABASE_URL}
     ports:
-      - "80:80"
+      - "8080:80"
     depends_on:
       - db_prod
       - db_test
