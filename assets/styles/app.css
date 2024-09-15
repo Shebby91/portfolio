@@ -21,9 +21,13 @@
     --bs-btn-hover-bg: #0bbfd7;
     --bs-btn-hover-border-color: #0ba7d7;
 }
+* {
+    box-sizing: border-box;
+}
 
-body {
+html,body {
     font-family: var(--inter-variable);
+    height: 100%;
 }
 
 .bg-logo {
