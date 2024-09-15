@@ -1,12 +1,26 @@
+:root {
+    --bs-primary: #333;
+    --bs-border-radius: 1rem;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--bs-primary);
+    --bs-btn-border-color: var(--bs-primary);
+    --bs-btn-disabled-bg: var(--bs-primary);
+    --bs-btn-disabled-border-color: var(--bs-primary);
+    --bs-btn-hover-bg: #0bbfd7;
+    --bs-btn-hover-border-color: #0ba7d7;
+}
+
 body {
     background-color: #333;
+    font-family: 'Inter Variable', sans-serif;
 }
 
 .example-wrapper {
     margin: 1em auto;
     max-width: 800px;
     width: 95%;
-    font: 18px/1.5 sans-serif;
     color: #fff;
 }
 
