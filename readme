@@ -17,5 +17,3 @@
 #composer require symfony/apache-pack
 #composer require orm-fixtures --dev
 #composer require zenstruck/foundry --dev
-#docker-compose exec localstack awslocal s3 mb s3://my-bucket
-#docker-compose exec localstack awslocal s3 ls
