@@ -11,5 +11,9 @@
 #php bin/console make:controller    
 #php bin/console make:form
 #php bin/console asset-map:compile
-
+#php bin/console doctrine:fixtures:load
+#php bin/console make:fixtures
+#symfony console make:factory
 #composer require symfony/apache-pack
+#composer require orm-fixtures --dev
+#composer require zenstruck/foundry --dev
