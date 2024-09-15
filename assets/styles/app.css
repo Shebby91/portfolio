@@ -9,6 +9,8 @@
 
 :root {
     --inter-variable: 'Inter Variable', sans-serif;
+    --admin-color: #0d6efd;
+    --user-color: #212529;
 }
 
 .btn-primary {

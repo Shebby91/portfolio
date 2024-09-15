@@ -1,12 +1,30 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello IndexController!{% endblock %}
+{% block stylesheets %}
+  {{ parent() }}
+  {% if admin %}
+    <link rel="stylesheet" href="{{ asset('styles/admin.css') }}">
+  {% else %}
+    <link rel="stylesheet" href="{{ asset('styles/user.css') }}">
+  {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  {% if admin %}
+    <script type="module" src="{{ asset('admin.js') }}"></script>
+  {% else %}
+    <script type="module" src="{{ asset('user.js') }}"></script>
+  {% endif %}
+{% endblock %}
+
+{% block title %}Hello {{ user }}!{% endblock %}
 
 {% block body %}
 <div class="container">
   <div class="row">
     <div class="col-12 d-flex justify-content-between mt-3">
-      <h1>Hello {{ controller_name }}!</h1>
+      <h1 class="status">Hello {{ user }}!</h1>
       <span class="bg-logo"></span>
     </div>
     <div class="col-12 d-flex justify-content-center">
