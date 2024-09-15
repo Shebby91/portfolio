@@ -3,39 +3,22 @@
 {% block title %}Hello IndexController!{% endblock %}
 
 {% block body %}
-<div class="example-wrapper">
-    <h1 class="test">Hello {{ controller_name }}! ✅</h1>
-    <img src="{{ asset('images/symfony.jpg') }}" alt="">
-    This friendly message is coming from:
+<div class="container">
+  <div class="row">
+    <div class="col-12 d-flex justify-content-between mt-3">
+      <h1>Hello {{ controller_name }}!</h1>
+      <span class="bg-logo"></span>
+    </div>
+    <div class="col-12 d-flex justify-content-center">
+      <div class="col-6">
+        <img src="{{ asset('images/symfony.jpg') }}" class="img-fluid" alt="symfony.jpg">
+      </div>
+    </div>
     <ul>
         <li data-controller="hello">TEST</li>
+        <li {{ stimulus_controller('hello') }}>TEST</li>
+        {{ stimulus_controller('hello') }}
     </ul>
-</div>
-<div class="row justify-content-center">
-    <div class="col-6">
-      <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-  Launch static backdrop modal
-</button>
-
-<!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Understood</button>
-      </div>
-    </div>
   </div>
-</div>
-    </div>
 </div>
 {% endblock %}

@@ -21,26 +21,13 @@
 }
 
 body {
-    background-color: #333;
     font-family: var(--inter-variable);
-}
-
-.example-wrapper {
-    margin: 1em auto;
-    max-width: 800px;
-    width: 95%;
-    color: #fff;
-}
-
-.example-wrapper code {
-    background: #333;
-    padding: 2px 6px;
 }
 
 .bg-logo {
     display: block;
-    width: 32px;
-    height: 32px;
+    width: 56px;
+    height: 56px;
     background-image: url('../images/symfony.jpg');
     background-size: contain;
     background-repeat: no-repeat;
