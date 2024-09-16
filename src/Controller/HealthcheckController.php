@@ -18,15 +18,30 @@ class HealthcheckController extends AbstractController
             $connection = $entityManager->getConnection();
             $connection->executeQuery('SELECT 1');
 
-            return new Response('Verbindung zur Datenbank erfolgreich hergestellt!');
+      
+            return $this->render('healthcheck/healthcheck.html.twig', [
+                'title' => 'Healthcheck',
+                'connection' => true,
+                'message' => 'Verbindung zur Datenbank erfolgreich hergestellt!',
+            ]);
         } catch (ConnectionException $e) {
-            // Datenbankverbindung fehlgeschlagen
-            return new Response('Fehler bei der Verbindung zur Datenbank: ' . $e->getMessage());
+            return $this->render('healthcheck/healthcheck.html.twig', [
+                'title' => 'Healthcheck',
+                'connection' => false,
+                'error' => 'Fehler bei der Verbindung zur Datenbank: ' . $e->getMessage()
+            ]);
         } catch (\Exception $e) {
-            // Andere Fehler abfangen
-            return new Response('Ein Fehler ist aufgetreten: ' . $e->getMessage());
+            return $this->render('healthcheck/healthcheck.html.twig', [
+                'title' => 'Healthcheck',
+                'connection' => false,
+                'error' => 'Ein Fehler ist aufgetreten: ' . $e->getMessage()
+            ]);
         }
 
-        return new Response('Die Verbindung zur Datenbank konnte nicht hergestellt werden.');
+        return $this->render('healthcheck/healthcheck.html.twig', [
+            'title' => 'Healthcheck',
+            'connection' => false,
+            'error' => 'Die Verbindung zur Datenbank konnte nicht hergestellt werden.'
+        ]);
     }
 }

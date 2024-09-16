@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %} {% block title %}{{ title }}{% endblock %} {%
+block body %}
+<div class="d-flex h-100 justify-content-center align-items-center">
+  {% if error is defined %}
+  <div class="alert alert-danger" role="alert">
+    <span class="badge rounded-pill text-bg-danger">{{ error }}</span>
+  </div>
+  {% endif %}
+  {% if connection %}
+  <div class="alert alert-success" role="alert">
+    <span class="badge rounded-pill text-bg-success">{{ message }}</span>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
