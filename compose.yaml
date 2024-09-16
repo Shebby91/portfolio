@@ -29,7 +29,9 @@ services:
       - db_prod_data:/var/lib/mysql
     ports:
       - "3307:3306"
-
+    networks:
+      - backend
+#By adding networks: -backend make:migration command can only be executed in the container directly
   db_test:
     image: mariadb:latest
     environment:
