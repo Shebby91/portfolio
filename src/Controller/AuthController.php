@@ -27,11 +27,10 @@ class AuthController extends AbstractController
     }
 
     #[Route('/logout', name: 'app_logout')]
-    public function logout(AuthenticationUtils $authenticationUtils): Response
+    public function logout()
     {
         return $this->render('security/login.html.twig', [
-            'error' => $authenticationUtils->getLastAuthenticationError(),
-            'loggedOut' => 'LoggedOut',
-        ]);
+                'loggedOut' => true,
+            ]);
     }
 }

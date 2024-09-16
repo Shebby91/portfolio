@@ -17,6 +17,7 @@ use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\CustomCredentials;
+use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
@@ -52,16 +53,18 @@ class LoginFormAuthenticator extends AbstractAuthenticator
         $email = $request->request->get('email');
         $password = $request->request->get('password');
         return new Passport(
-            new UserBadge($email, function($userIdentifier){
+            new UserBadge($email, function($userIdentifier) {
+                // optionally pass a callback to load the User manually
                 $user = $this->userRepository->findOneBy(['email' => $userIdentifier]);
-                if(!$user){
+
+                if (!$user) {
                     throw new UserNotFoundException();
                 }
+                
                 return $user;
             }),
-            new CustomCredentials(function($credentials, User $user) {
-                return $credentials === 'tada';
-            }, $password)
+            
+            new PasswordCredentials($password)
         );
     }
 
@@ -74,7 +77,6 @@ class LoginFormAuthenticator extends AbstractAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        //dd("Failure", $exception);
         $data = [
             // you may want to customize or obfuscate the message first
             //'message' => strtr($exception->getMessageKey(), $exception->getMessageData()),
@@ -83,7 +85,6 @@ class LoginFormAuthenticator extends AbstractAuthenticator
             // $this->translator->trans($exception->getMessageKey(), $exception->getMessageData())
         ];
 
-        
         $request->getSession()->set(SecurityRequestAttributes::AUTHENTICATION_ERROR, $exception);
         return new RedirectResponse(
             $this->router->generate('app_login')
