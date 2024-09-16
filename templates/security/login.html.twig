@@ -40,6 +40,9 @@ block body %}
     <div class="d-flex justify-content-center">
       <button type="submit" class="btn btn-primary">Login</button>
     </div>
+    <input type="hidden" name="_csrf_token"
+    value="{{ csrf_token('authenticate') }}"
+    >
   </form>
 </div>
 {% endblock %}
