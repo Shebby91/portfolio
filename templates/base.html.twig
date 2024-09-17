@@ -20,6 +20,9 @@
             {% for flash in app.flashes('success') %}
                 <div class="alert alert-success">{{ flash }}</div>
             {% endfor %}
+            {% for flash in app.flashes('error') %}
+                <div class="alert alert-success">{{ flash }}</div>
+            {% endfor %}
             {% block body %}
             {% endblock %}
         </div>
