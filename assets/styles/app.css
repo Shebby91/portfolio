@@ -30,11 +30,8 @@ html,body {
     height: 100%;
 }
 
-.bg-logo {
-    display: block;
-    width: 56px;
-    height: 56px;
-    background-image: url('../images/symfony.jpg');
-    background-size: contain;
+.bg-img {
+    background-image: url('../images/bg-img.jpg');
+    background-size: cover;
     background-repeat: no-repeat;
 }

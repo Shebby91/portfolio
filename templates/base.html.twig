@@ -15,7 +15,7 @@
             {% endblock %}
         {% endblock %}
     </head>
-    <body>
+    <body {% if is_granted('ROLE_USER') == false %}class="bg-img"{% endif %}>
         <div class="container h-100">
             {% block body %}
             {% endblock %}
