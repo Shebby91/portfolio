@@ -30,6 +30,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $firstName = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $lastName = null;
+
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
@@ -111,6 +114,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->firstName;
     }
 
+    public function getLastName(): ?string
+    {
+        return $this->firstName;
+    }
+
     public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
@@ -119,6 +127,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFirstName(?string $firstName): static
     {
         $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    public function setLastName(?string $lastName): static
+    {
+        $this->lastName = $lastName;
 
         return $this;
     }
@@ -140,7 +155,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->isVerified;
     }
-    
+
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;

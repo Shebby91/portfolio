@@ -11,8 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
-use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
+use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 class AuthController extends AbstractController
 {
@@ -27,7 +26,7 @@ class AuthController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, UserAuthenticatorInterface $userAuthenticator, FormLoginAuthenticator $formLoginAuthenticator): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, VerifyEmailHelperInterface $verifyEmailHelper): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -44,14 +43,16 @@ class AuthController extends AbstractController
             $entityManager->flush();
 
             // do anything else you need here, like send an email
-            $userAuthenticator->authenticateUser(
-                $user,
-                $formLoginAuthenticator,
-                $request
+            $signatureComponents = $verifyEmailHelper->generateSignature(
+                'app_verify_email',
+                $user->getId(),
+                $user->getEmail(),
+                ['id' => $user->getId()]
             );
 
-
-            return $this->redirectToRoute('app_healthcheck');
+            //TODO: send this as an email
+            $this->addFlash('success', 'Confirm your email at: ' . $signatureComponents->getSignedUrl());
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('security/register.html.twig', [
@@ -63,6 +64,20 @@ class AuthController extends AbstractController
     #[Route('/logout', name: 'app_logout')]
     public function logout()
     {
+        return $this->render('security/login.html.twig', [
+                'loggedOut' => true,
+            ]);
+    }
+
+    #[Route('/verify', name: 'app_verify_email')]
+    public function verifyUserEmail()
+    {
+        dd(1);
+        //$userAuthenticator->authenticateUser(
+        //    $user,
+        //    $formLoginAuthenticator,
+        //    $request
+        //);
         return $this->render('security/login.html.twig', [
                 'loggedOut' => true,
             ]);

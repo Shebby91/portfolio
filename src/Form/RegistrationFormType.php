@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class RegistrationFormType extends AbstractType
 {
@@ -21,6 +22,18 @@ class RegistrationFormType extends AbstractType
             ->add('email',  EmailType::class, [
                 'attr' => [
                     'placeholder' => 'Enter your email',
+                    'class' => 'border border-2 border-primary rounded',
+                ],
+            ])
+            ->add('firstname',  TextType::class, [
+                'attr' => [
+                    'placeholder' => 'Enter your firstname',
+                    'class' => 'border border-2 border-primary rounded',
+                ],
+            ])
+            ->add('lastname',  TextType::class, [
+                'attr' => [
+                    'placeholder' => 'Enter your lastname',
                     'class' => 'border border-2 border-primary rounded',
                 ],
             ])
