@@ -27,6 +27,7 @@ security:
             #    - App\Security\LoginFormAuthenticator
                 - App\Security\DummyAuthenticator
             logout: true
+            login_throttling: true
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
