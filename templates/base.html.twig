@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,16 +15,22 @@
             {% endblock %}
         {% endblock %}
     </head>
-    <body {% if is_granted('ROLE_USER') == false %}class="bg-img"{% endif %}>
-        <div class="container h-100">
-            {% for flash in app.flashes('success') %}
-                <div class="alert alert-success">{{ flash }}</div>
-            {% endfor %}
-            {% for flash in app.flashes('error') %}
-                <div class="alert alert-success">{{ flash }}</div>
-            {% endfor %}
+    <body class="d-flex align-items-center bg-body-tertiary">
+        <main class="form-signin w-100 m-auto">
             {% block body %}
             {% endblock %}
-        </div>
+            {% for flash in app.flashes('success') %}
+                <div class="alert alert-success alert-dismissible fade show mt-3 text-truncate" role="alert">
+                    {{ flash }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+            {% for flash in app.flashes('error') %}
+            <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                {{ flash }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </main>
     </body>
 </html>

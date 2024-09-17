@@ -12,13 +12,8 @@ block body %}
     <span class="badge rounded-pill text-bg-success">{{ message }}</span>
   </div>
   {% endif %}
-    <div class="mt-3">
-      <a href="{{ path('app_logout') }}" class="btn btn-danger">Logout</a>
-    </div>
-    {% if is_granted('ROLE_ADMIN') %}
-    <div class="mt-3">
-      <a href="{{ path('app_admin') }}" class="btn btn-success">Admin</a>
-    </div>
-    {% endif %} 
+  <div class="mt-3">
+    <a href="{{ path('app_admin') }}" class="btn btn-secondary">Admin</a>
+  </div>
 </div>
 {% endblock %}

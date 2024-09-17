@@ -24,21 +24,16 @@ security:
                 password_parameter: password
                 enable_csrf: true
             custom_authenticator:
-            #    - App\Security\LoginFormAuthenticator
                 - App\Security\DummyAuthenticator
             logout: true
             login_throttling: true
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
-
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/healthcheck, roles: ROLE_USER }
+        - { path: ^/healthcheck, roles: ROLE_ADMIN }
+        - { path: ^/user, roles: ROLE_USER }
 
 when@test:
     security:

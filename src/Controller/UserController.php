@@ -7,9 +7,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class AdminController extends AbstractController
+class UserController extends AbstractController
 {
-    #[Route('/admin', name: 'app_admin')]
+    #[Route('/user', name: 'app_user')]
     public function admin(ExampleService $service): Response
     {
         
@@ -17,8 +17,8 @@ class AdminController extends AbstractController
         //$user = $service->getUserInServiceClass();
         //dd($user);
 
-        return $this->render('admin/admin.html.twig', [
-            'title' => 'Admin',
+        return $this->render('user/user.html.twig', [
+            'title' => 'User',
         ]);
     }
 }

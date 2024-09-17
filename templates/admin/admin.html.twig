@@ -1,13 +1,12 @@
 {% extends 'base.html.twig' %} {% block title %}{{ title }}{% endblock %} 
 {% block body %}
   <div class="d-flex flex-column h-100 justify-content-center align-items-center">
-    
-    {% if is_granted('ROLE_ADMIN') %}
     <h4>{{ title }}</h4>
     <span class="text-muted">{{ app.user.email }}</span>
     <div class="mt-3">
+      <a href="{{ path('app_healthcheck') }}" class="btn btn-success">Healthcheck</a>
+      <a href="{{ path('app_user') }}" class="btn btn-primary">User Area</a>
       <a href="{{ path('app_logout') }}" class="btn btn-danger">Logout</a>
     </div>
-    {% endif %} 
   </div>
 {% endblock %}
