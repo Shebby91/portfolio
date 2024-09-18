@@ -27,6 +27,7 @@ body {
     background-image: url('../images/bg-img.jpg');
     background-size: cover;
     background-repeat: no-repeat;
+    background-blend-mode: soft-light;
 }
 
 .form-signin {

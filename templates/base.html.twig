@@ -15,7 +15,7 @@
             {% endblock %}
         {% endblock %}
     </head>
-    <body class="d-flex align-items-center bg-body-tertiary">
+    <body class="d-flex align-items-center bg-body-tertiary {% if is_granted('ROLE_USER') == false %}bg-img{% endif %}">
         <main class="form-signin w-100 m-auto">
             {% block body %}
             {% endblock %}
