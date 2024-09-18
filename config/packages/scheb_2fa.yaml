@@ -3,3 +3,9 @@ scheb_two_factor:
     security_tokens:
         - Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken
         - Symfony\Component\Security\Http\Authenticator\Token\PostAuthenticationToken
+    google:
+        enabled: true
+        server_name: Server Name       # Server name used in QR code
+        issuer: Issuer Name            # Issuer name used in QR code
+        digits: 6                      # Number of digits in authentication code
+        template: security/2fa_form.html.twig

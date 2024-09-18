@@ -12,8 +12,8 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo pdo_mysql zip \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl \
-    && apt-get install -y libfreetype6-dev libjpeg-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && apt-get install -y libfreetype6-dev libjpeg-dev libwebp-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install gd \
     && a2enmod rewrite \
     && apt-get clean && rm -rf /var/lib/apt/lists/*

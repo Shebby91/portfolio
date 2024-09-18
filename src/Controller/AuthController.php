@@ -7,7 +7,7 @@ use App\Form\RegistrationFormType;
 use App\Form\ResetPasswordFormType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Controller\BaseController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -15,8 +15,19 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
+use Scheb\TwoFactorBundle\Security\TwoFactor\Provider\Google\GoogleAuthenticatorInterface;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\Label\LabelAlignment;
+use Endroid\QrCode\Label\Font\NotoSans;
+use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Writer\WebPWriter;
+use Scheb\TwoFactorBundle\Model\Google\TwoFactorInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class AuthController extends AbstractController
+class AuthController extends BaseController
 {
     #[Route('/', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
@@ -77,9 +88,7 @@ class AuthController extends AbstractController
     {
         $user = $userRepository->find($request->query->get('id'));
         
-
-
-        if (!$user instanceof User) {
+        if (!($user instanceof User)) {
             throw new \Exception('Unexpected user type');
         }
         
@@ -109,7 +118,7 @@ class AuthController extends AbstractController
         if ($request->isMethod('POST') && filter_var($authenticationUtils->getLastUsername(), FILTER_VALIDATE_EMAIL)) {
             $user = $userRepository->findOneBy(['email' => $authenticationUtils->getLastUsername()]);
 
-            if (!$user instanceof User) {
+            if (!($user instanceof User)) {
                 throw new \Exception('Unexpected user type');
             }
 
@@ -138,7 +147,7 @@ class AuthController extends AbstractController
             if (filter_var($authenticationUtils->getLastUsername(), FILTER_VALIDATE_EMAIL)) {
                 $user = $userRepository->findOneBy(['email' => $authenticationUtils->getLastUsername()]);
                 
-                if (!$user instanceof User) {
+                if (!($user instanceof User)) {
                     throw new \Exception('Unexpected user type');
                 }
     
@@ -218,5 +227,66 @@ class AuthController extends AbstractController
             'title' => 'Reset Password',
             'resetPasswordForm' => $form,
         ]);
+    }
+
+    #[Route('/enable/2fa', name: 'app_enable_2fa')]
+    public function enable2fa(Request $request, UserRepository $userRepository, GoogleAuthenticatorInterface $googleAuthenticator, EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+        
+        if(!$user->isGoogleAuthenticatorEnabled()){
+            
+            $user->setGoogleAuthenticatorSecret($googleAuthenticator->generateSecret());
+            
+            if (!($user instanceof TwoFactorInterface)) {
+                throw new NotFoundHttpException('Cannot display QR code');
+            }
+
+            //$em->flush();
+
+            return $this->render('security/enable_two_factor.html.twig', [
+                'qr' => $this->displayQrCode($googleAuthenticator->getQRContent($user)),
+                'title' => 'Setup Authenticator',
+            ]);
+        }
+
+        return $this->render('security/enable_two_factor.html.twig', [
+            'title' => 'Enable 2FA',
+            'resetPasswordForm' => '$form',
+        ]);
+    }
+
+    #[Route('/login/two', name: 'app_login_2fa')]
+    public function login2fa(Request $request, GoogleAuthenticatorInterface $googleAuthenticator, EntityManagerInterface $em, AuthenticationUtils $authenticationUtils)
+    {
+        $user = $this->getUser();
+
+        return $this->render('security/reset_password.html.twig', [
+            'title' => 'Reset Password',
+            'resetPasswordForm' => '$form',
+        ]);
+    }
+
+    private function displayQrCode(string $qrCodeContent)
+    {
+        $result = Builder::create()
+            ->writer(new WebPWriter())
+            ->writerOptions(['quality' => 100])
+            ->data($qrCodeContent)
+            ->encoding(new Encoding('UTF-8'))
+            ->errorCorrectionLevel(ErrorCorrectionLevel::High)
+            ->size(300)
+            ->margin(10)
+            ->roundBlockSizeMode(RoundBlockSizeMode::Margin)
+            ->logoPath($this->getParameter('kernel.project_dir').'/assets/images/symfony.jpg')
+            ->logoResizeToWidth(50)
+            ->logoPunchoutBackground(true)
+            ->labelText('This is the label')
+            ->labelFont(new NotoSans(20))
+            ->labelAlignment(LabelAlignment::Center)
+            ->validateResult(true)
+            ->build();
+
+        return $result->getDataUri();;
     }
 }

@@ -2,57 +2,96 @@
 namespace App\EventSubscriber;
 use App\Entity\User;
 use App\Security\AccountNotVerifiedAuthenticationException;
+use App\Security\TwoFactorNotEnabledException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Http\Event\CheckPassportEvent;
 use Symfony\Component\Security\Http\Event\LoginFailureEvent;
 use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 
 class CheckVerifiedUserSubscriber implements EventSubscriberInterface
 {
     private RouterInterface $router;
+
     public function __construct(RouterInterface $router)
     {
         $this->router = $router;
     }
+
+        
     public function onCheckPassport(CheckPassportEvent $event)
     {
+        /** @var Passport $user */
         $passport = $event->getPassport();
-
+        
+        /** @var User $user */
         $user = $passport->getUser();
+
         if (!$user instanceof User) {
             throw new \Exception('Unexpected user type');
         }
+
         if (!$user->getIsVerified()) {
             throw new AccountNotVerifiedAuthenticationException();
         }
+
+        //if (!$user->isGoogleAuthenticatorEnabled()) {
+        //    throw new CustomUserMessageAuthenticationException('2fa not enabled.');
+        //}
     }
+
     public function onLoginFailure(LoginFailureEvent $event)
     {
         if (!$event->getException() instanceof AccountNotVerifiedAuthenticationException) {
             return;
         }
+       
         $response = new RedirectResponse(
             $this->router->generate('app_verify_resend_email')
         );
+        
+        //dd($event->getException());
+        //if ($event->getException() instanceof CustomUserMessageAuthenticationException) {
+        //    throw new AccountNotVerifiedAuthenticationException();
+        //}
+
         $event->setResponse($response);
     }
+
     public function onLoginSuccess(LoginSuccessEvent $event)
     {
+        /** @var Passport $user */
+        $passport = $event->getPassport();
+        
+        /** @var User $user */
+        $user = $passport->getUser();
+        
+        if (!$user instanceof User) {
+            throw new \Exception('Unexpected user type');
+        }
         
         $response = new RedirectResponse(
             $this->router->generate('app_user')
         );
-        
+
         if (in_array('ROLE_ADMIN',$event->getPassport()->getUser()->getRoles())) {
             $response = new RedirectResponse(
                 $this->router->generate('app_admin')
             );
         }
 
+        if(!$user->isGoogleAuthenticatorEnabled()) {
+            $response = new RedirectResponse(
+                $this->router->generate('app_enable_2fa')
+            );
+        }
+
         $event->setResponse($response);
     }
+
     public static function getSubscribedEvents()
     {
         return [
