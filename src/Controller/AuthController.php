@@ -32,9 +32,9 @@ class AuthController extends BaseController
     #[Route('/', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
+        $user = $this->getUser();
         
-        
-        if($this->getUser()){
+        if($user && $user instanceof User){
             if (in_array('ROLE_ADMIN',$this->getUser()->getRoles())) {
                 return $this->redirectToRoute('app_admin');
             }
@@ -44,9 +44,16 @@ class AuthController extends BaseController
             }
         }
 
+        $id = 'element-fall';
+        $error = $authenticationUtils->getLastAuthenticationError();
+        
+        if($error){
+            $id = 'element-shake';
+        }
 
         return $this->render('security/login.html.twig', [
-            'error' => $authenticationUtils->getLastAuthenticationError(),
+            'error' => $error,
+            'id' => $id,
             'last_username' => $authenticationUtils->getLastUsername(),
             'title' => 'Sign in',
         ]);
@@ -69,7 +76,6 @@ class AuthController extends BaseController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // do anything else you need here, like send an email
             $signatureComponents = $verifyEmailHelper->generateSignature(
                 'app_verify_email',
                 $user->getId(),

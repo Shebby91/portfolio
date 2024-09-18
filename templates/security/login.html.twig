@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %} {% block title %}{{ title }}{% endblock %} {%
 block body %}
-
+<div id="{{id}}">
   <form method="post" class="mb-3">
     <h1 class="h4 mb-3 fw-normal">{{ title }}</h1>
     <div class="form-floating">
@@ -42,4 +42,5 @@ block body %}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
   {% endif %}
+</div>
 {% endblock %}
