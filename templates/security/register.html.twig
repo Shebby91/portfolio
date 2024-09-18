@@ -11,11 +11,12 @@
       {{ form_row(registrationForm.plainPassword) }}
       {{ form_row(registrationForm.agreeTerms) }}
         <div class="d-flex justify-content-center">
-          <button type="submit" class="btn btn-primary">Register</button>
+          <button type="submit" class="btn btn-primary w-100 py-2">Register</button>
         </div>
         <div class="mt-3 text-center">
           <span class="text-muted">Already have an account?</span>
           <a href="{{path('app_login')}}">Sign in</a>
         </div>
+        {{ form_row(registrationForm._token) }}
       </form>
 {% endblock %}

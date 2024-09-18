@@ -3,13 +3,25 @@
 {% block body %}
 
 <form method="post" class="mb">
-    <h1 class="h4 mb-3 font-weight-normal">Verify your Email</h1>
+    <h1 class="h4 mb-3 fw-normal">{{ title }}</h1>
     <p>
         An email was sent, please click it to enable your
         account before logging in.
     </p>
-    <div class="d-flex justify-content-start">
-        <button type="submit" class="btn btn-primary">Re-send Email</button>
+    <div class="d-flex flex-column">
+        <a class="btn btn-primary w-100 py-2 mb-3" href="{{ path('app_login') }}">Sign in</a>
+        <button type="submit"  class="btn btn-link d-flex justify-content-center p-0 align-items-center" style="
+        height: 1.5rem;
+        text-decoration: none;
+        ">
+            <span class="text-link mb-1" style="
+            height: 1.0625rem;
+            text-decoration: underline;
+            ">Re-send</span>&nbsp;
+            <span class="text-muted mb-1" style="
+            height: 1.0625rem;
+            ">Email?</span>
+        </button>
         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
     </div>
 </form>

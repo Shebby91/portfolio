@@ -66,7 +66,7 @@ class AuthController extends BaseController
 
             //TODO: send this as an email
             $this->addFlash('success', 'Confirm your email at: ' . $signatureComponents->getSignedUrl());
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('app_verify_resend_email');
         }
 
         return $this->render('security/register.html.twig', [
@@ -108,7 +108,7 @@ class AuthController extends BaseController
 
         $em->flush();
         
-        $this->addFlash('success', 'Account verfied! You can now log in.');
+        $this->addFlash('success', 'Email verfied! You can now log in and set up your two factor authentication.');
         return $this->redirectToRoute('app_login');
     }
 
@@ -131,12 +131,12 @@ class AuthController extends BaseController
 
             //TODO: send this as an email
             $this->addFlash('success', 'Confirm your email at: ' . $signatureComponents->getSignedUrl());
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('app_verify_resend_email');
 
         }
-        
+
         return $this->render('security/resend_verify_email.html.twig', [
-            'title' => 'Resend Email'
+            'title' => 'Verify Email'
         ]);
     }
 
@@ -218,11 +218,6 @@ class AuthController extends BaseController
             return $this->redirectToRoute('app_login');
         }
 
-        //$user->setIsVerified(true);
-        //$em->flush();
-        
-        //$this->addFlash('success', 'Account verfied! You can now log in.');
-        //return $this->redirectToRoute('app_login');
         return $this->render('security/reset_password.html.twig', [
             'title' => 'Reset Password',
             'resetPasswordForm' => $form,
@@ -256,17 +251,6 @@ class AuthController extends BaseController
         ]);
     }
 
-    #[Route('/login/two', name: 'app_login_2fa')]
-    public function login2fa(Request $request, GoogleAuthenticatorInterface $googleAuthenticator, EntityManagerInterface $em, AuthenticationUtils $authenticationUtils)
-    {
-        $user = $this->getUser();
-
-        return $this->render('security/reset_password.html.twig', [
-            'title' => 'Reset Password',
-            'resetPasswordForm' => '$form',
-        ]);
-    }
-
     private function displayQrCode(string $qrCodeContent)
     {
         $result = Builder::create()
@@ -279,11 +263,11 @@ class AuthController extends BaseController
             ->margin(10)
             ->roundBlockSizeMode(RoundBlockSizeMode::Margin)
             ->logoPath($this->getParameter('kernel.project_dir').'/assets/images/symfony.jpg')
-            ->logoResizeToWidth(50)
+            ->logoResizeToWidth(30)
             ->logoPunchoutBackground(true)
-            ->labelText('This is the label')
-            ->labelFont(new NotoSans(20))
-            ->labelAlignment(LabelAlignment::Center)
+            //->labelText('This is the label')
+            //->labelFont(new NotoSans(20))
+            //->labelAlignment(LabelAlignment::Center)
             ->validateResult(true)
             ->build();
 

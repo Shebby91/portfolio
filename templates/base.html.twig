@@ -15,18 +15,18 @@
             {% endblock %}
         {% endblock %}
     </head>
-    <body class="d-flex align-items-center bg-body-tertiary {% if is_granted('ROLE_USER') == false %}bg-img{% endif %}">
+    <body class="d-flex align-items-center bg-body-tertiary bg-img">
         <main class="form-signin w-100 m-auto">
             {% block body %}
             {% endblock %}
             {% for flash in app.flashes('success') %}
-                <div class="alert alert-success alert-dismissible fade show mt-3 text-truncate" role="alert">
+                <div class="alert alert-success alert-dismissible fade show mt-3 text-break" role="alert">
                     {{ flash }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             {% endfor %}
             {% for flash in app.flashes('error') %}
-            <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+            <div class="alert alert-danger alert-dismissible fade show mt-3 text-break" role="alert">
                 {{ flash }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>

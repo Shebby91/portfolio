@@ -12,10 +12,6 @@ class AdminController extends AbstractController
     public function admin(): Response
     {
         
-        //dd($this->getUser());
-        //$user = $service->getUserInServiceClass();
-        //dd($user);
-
         return $this->render('admin/admin.html.twig', [
             'title' => 'Admin',
         ]);
