@@ -1,4 +1,5 @@
 Essential Commands to Start after cloning the projekt
+wsl -d Ubuntu
 sudo docker-compose -f compose.yaml --env-file .env.dev build --no-cache
 sudo docker-compose -f compose.yaml --env-file .env.dev up -d
 sudo docker exec -it portfolio-app-1 /bin/bash
