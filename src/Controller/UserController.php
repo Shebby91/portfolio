@@ -10,8 +10,11 @@ use Symfony\Component\Routing\Attribute\Route;
 class UserController extends AbstractController
 {
     #[Route('/user', name: 'app_user')]
-    public function admin(): Response
+    public function user(): Response
     {
+        
+        
+        
         return $this->render('user/user.html.twig', [
             'title' => 'User',
         ]);
