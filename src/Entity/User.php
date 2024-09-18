@@ -40,6 +40,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column]
     private ?bool $isVerified = false;
 
+    #[ORM\Column]
+    private ?bool $isTwoFactorEnabled = false;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $googleAuthenticatorSecret;
 
@@ -120,7 +123,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     public function getLastName(): ?string
     {
-        return $this->firstName;
+        return $this->lastName;
     }
 
     public function getPlainPassword(): ?string
@@ -160,15 +163,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this->isVerified;
     }
 
+    public function getIsTwoFactorEnabled(): ?bool
+    {
+        return $this->isTwoFactorEnabled;
+    }
+    
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
         return $this;
     }
 
+    public function setIsTwoFactorEnabled(bool $isTwoFactorEnabled): self
+    {
+        $this->isTwoFactorEnabled = $isTwoFactorEnabled;
+        return $this;
+    }
+
     public function isGoogleAuthenticatorEnabled(): bool
     {
-        return null !== $this->googleAuthenticatorSecret;
+        return $this->getIsTwoFactorEnabled();
     }
 
     public function getGoogleAuthenticatorUsername(): string

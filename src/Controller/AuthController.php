@@ -231,16 +231,37 @@ class AuthController extends BaseController
         
         if(!$user->isGoogleAuthenticatorEnabled()){
             
-            $user->setGoogleAuthenticatorSecret($googleAuthenticator->generateSecret());
+            
             
             if (!($user instanceof TwoFactorInterface)) {
                 throw new NotFoundHttpException('Cannot display QR code');
             }
 
-            //$em->flush();
+            
+
+            if ($request->isMethod('POST')) {
+                if($googleAuthenticator->checkCode($user, $request->request->get('code'))){
+                    $user->setIsTwoFactorEnabled(true);
+                    $em->flush();
+    
+                    if (in_array('ROLE_ADMIN',$user->getRoles())) {
+                        return $this->redirectToRoute('app_admin');
+                    }
+    
+                    return $this->redirectToRoute('app_user');
+                }
+                $this->addFlash('error', 'Code expired. Please try again.');
+                return $this->redirectToRoute('app_enable_2fa');
+            };
+
+            $secret = $googleAuthenticator->generateSecret();
+            $user->setGoogleAuthenticatorSecret($secret);
+
+            $em->flush();
 
             return $this->render('security/enable_two_factor.html.twig', [
                 'qr' => $this->displayQrCode($googleAuthenticator->getQRContent($user)),
+                'checkPathUrl' => '2fa_check',
                 'title' => 'Setup Authenticator',
             ]);
         }
@@ -260,11 +281,11 @@ class AuthController extends BaseController
             ->encoding(new Encoding('UTF-8'))
             ->errorCorrectionLevel(ErrorCorrectionLevel::High)
             ->size(300)
-            ->margin(10)
+            ->margin(0)
             ->roundBlockSizeMode(RoundBlockSizeMode::Margin)
-            ->logoPath($this->getParameter('kernel.project_dir').'/assets/images/symfony.jpg')
-            ->logoResizeToWidth(30)
-            ->logoPunchoutBackground(true)
+            //->logoPath($this->getParameter('kernel.project_dir').'/assets/images/symfony.jpg')
+            //->logoResizeToWidth(20)
+            //->logoPunchoutBackground(true)
             //->labelText('This is the label')
             //->labelFont(new NotoSans(20))
             //->labelAlignment(LabelAlignment::Center)

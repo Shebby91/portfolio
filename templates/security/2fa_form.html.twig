@@ -1,6 +1,12 @@
 {% extends 'base.html.twig' %}
 {% block title %}Two Factor Authentication{% endblock %}
 {% block body %}
+
+{% if qr is defined %}
+
+<img src="{{qr}}" alt="qr-code-to-scan">
+
+{% endif %}
   <form action="{{ checkPathUrl ? checkPathUrl: path(checkPathRoute) }}" method="post" class="mb-3">
     <h1 class="h4 mb-3 fw-normal">Two Factor Authentication</h1>
     <div class="form-floating mb-3">
@@ -13,7 +19,6 @@
             inputmode="numeric"
             pattern="[0-9]*"
             class="form-control"
-
         />
         <label for="_auth_code">2-fa code</label>
     </div>
