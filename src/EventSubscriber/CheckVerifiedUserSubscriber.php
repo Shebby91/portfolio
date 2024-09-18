@@ -38,9 +38,6 @@ class CheckVerifiedUserSubscriber implements EventSubscriberInterface
             throw new AccountNotVerifiedAuthenticationException();
         }
 
-        //if (!$user->isGoogleAuthenticatorEnabled()) {
-        //    throw new CustomUserMessageAuthenticationException('2fa not enabled.');
-        //}
     }
 
     public function onLoginFailure(LoginFailureEvent $event)
@@ -53,10 +50,6 @@ class CheckVerifiedUserSubscriber implements EventSubscriberInterface
             $this->router->generate('app_verify_resend_email')
         );
         
-        //dd($event->getException());
-        //if ($event->getException() instanceof CustomUserMessageAuthenticationException) {
-        //    throw new AccountNotVerifiedAuthenticationException();
-        //}
 
         $event->setResponse($response);
     }
