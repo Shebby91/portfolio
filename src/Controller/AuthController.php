@@ -32,6 +32,19 @@ class AuthController extends BaseController
     #[Route('/', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
+        
+        
+        if($this->getUser()){
+            if (in_array('ROLE_ADMIN',$this->getUser()->getRoles())) {
+                return $this->redirectToRoute('app_admin');
+            }
+    
+            if (in_array('ROLE_USER',$this->getUser()->getRoles())) {
+                return $this->redirectToRoute('app_user');
+            }
+        }
+
+
         return $this->render('security/login.html.twig', [
             'error' => $authenticationUtils->getLastAuthenticationError(),
             'last_username' => $authenticationUtils->getLastUsername(),
