@@ -32,6 +32,7 @@
         "symfony/process": "6.4.*",
         "symfony/property-access": "6.4.*",
         "symfony/property-info": "6.4.*",
+        "symfony/rate-limiter": "6.4.*",
         "symfony/runtime": "6.4.*",
         "symfony/security-bundle": "6.4.*",
         "symfony/serializer": "6.4.*",
@@ -43,6 +44,7 @@
         "symfony/validator": "6.4.*",
         "symfony/web-link": "6.4.*",
         "symfony/yaml": "6.4.*",
+        "symfonycasts/verify-email-bundle": "^1.17",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0"
     },
@@ -96,6 +98,7 @@
         }
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.6",
         "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "6.4.*",
         "symfony/css-selector": "6.4.*",
@@ -103,6 +106,7 @@
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "^7.1",
         "symfony/stopwatch": "6.4.*",
-        "symfony/web-profiler-bundle": "6.4.*"
+        "symfony/web-profiler-bundle": "6.4.*",
+        "zenstruck/foundry": "^2.0"
     }
 }
