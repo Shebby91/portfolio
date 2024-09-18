@@ -1,10 +1,11 @@
-#Essential Commands to Start after cloning the projekt
-#sudo docker-compose -f compose.yaml --env-file .env.dev build --no-cache
-#sudo docker-compose -f compose.yaml --env-file .env.dev up -d
-#sudo docker exec -it portfolio-app-1 /bin/bash
-#php bin/console make:migration
-#php bin/console doctrine:migrations:migrate
-#php bin/console doctrine:fixtures:load
+Essential Commands to Start after cloning the projekt
+sudo docker-compose -f compose.yaml --env-file .env.dev build --no-cache
+sudo docker-compose -f compose.yaml --env-file .env.dev up -d
+sudo docker exec -it portfolio-app-1 /bin/bash
+php bin/console make:migration
+php bin/console doctrine:migrations:migrate
+php bin/console doctrine:fixtures:load
+sudo docker-compose down
 
 #'Important Commands'
 
