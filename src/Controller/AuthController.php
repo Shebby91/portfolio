@@ -33,7 +33,7 @@ class AuthController extends BaseController
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         $user = $this->getUser();
-        
+
         if($user && $user instanceof User){
             if (in_array('ROLE_ADMIN',$this->getUser()->getRoles())) {
                 return $this->redirectToRoute('app_admin');
@@ -49,7 +49,7 @@ class AuthController extends BaseController
         
         if($error){
             $id = 'element-shake';
-        }
+        }   
 
         return $this->render('security/login.html.twig', [
             'error' => $error,
@@ -163,8 +163,8 @@ class AuthController extends BaseController
     public function resetPassword(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, UserRepository $userRepository, AuthenticationUtils $authenticationUtils)
     {
         if ($request->isMethod('POST')) {
-            if (filter_var($authenticationUtils->getLastUsername(), FILTER_VALIDATE_EMAIL)) {
-                $user = $userRepository->findOneBy(['email' => $authenticationUtils->getLastUsername()]);
+            if (filter_var($request->request->get('email'), FILTER_VALIDATE_EMAIL)) {
+                $user = $userRepository->findOneBy(['email' => $request->request->get('email'),]);
                 
                 if (!($user instanceof User)) {
                     throw new \Exception('Unexpected user type');
