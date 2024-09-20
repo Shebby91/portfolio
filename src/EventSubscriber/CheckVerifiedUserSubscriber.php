@@ -89,12 +89,12 @@ class CheckVerifiedUserSubscriber implements EventSubscriberInterface
     {
         $request = $event->getRequest();
         $user = $this->security->getUser();
-
+        dd($user);
         // Wenn der Benutzer eingeloggt ist und 2FA nicht aktiviert ist
         if ($user instanceof User && !$user->isGoogleAuthenticatorEnabled()) {
             // Erlaube nur den Zugriff auf die 2FA-Aktivierungsseite und Logout
             $currentRoute = $request->attributes->get('_route');
-            if ($currentRoute !== 'app_enable_2fa' && $currentRoute !== 'app_logout') {
+            if ($currentRoute !== 'app_enable_2fa' && $currentRoute !== 'app_logout' && $currentRoute !== 'app_login') {
                 $event->setResponse(new RedirectResponse($this->router->generate('app_enable_2fa')));
             }
         }

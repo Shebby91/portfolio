@@ -14,15 +14,26 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RegistrationFormType extends AbstractType
-{
+{   
+    
+    private TranslatorInterface $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
+
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('firstname',  TextType::class, [
+                'label' => $this->translator->trans('register.firstname'),
                 'attr' => [
-                    'placeholder' => 'Enter your firstname',
                     'class' => 'rounded-top rounded-bottom-0'
                 ],
                 'row_attr' => [
@@ -30,8 +41,8 @@ class RegistrationFormType extends AbstractType
                 ], 
             ])
             ->add('lastname',  TextType::class, [
+                'label' => $this->translator->trans('register.lastname'),
                 'attr' => [
-                    'placeholder' => 'Enter your lastname',
                     'class' => 'rounded-0'
 
                 ],
@@ -40,8 +51,8 @@ class RegistrationFormType extends AbstractType
                 ], 
             ])
             ->add('email',  EmailType::class, [
+                'label' => $this->translator->trans('register.email'),
                 'attr' => [
-                    'placeholder' => 'name@example.com',
                     'class' => 'rounded-0'
                 ],
                 'row_attr' => [
@@ -54,10 +65,9 @@ class RegistrationFormType extends AbstractType
                 'type' => PasswordType::class,
                 'mapped' => false,
                 'first_options'  => [
-                    'label' => 'Password',
+                    'label' => $this->translator->trans('register.password'),
                     'attr' => [
                         'autocomplete' => 'new-password',
-                        'placeholder' => 'Enter your password',
                         'class' => 'rounded-0 mb-0'
                     ],
                     'row_attr' => [
@@ -65,39 +75,39 @@ class RegistrationFormType extends AbstractType
                     ], 
                 ],
                 'second_options' => [
-                    'label' => 'Repeat Password',
+                    'label' => $this->translator->trans('register.password_repeat'),
                     'attr' => [
                         'autocomplete' => 'new-password',
-                        'placeholder' => 'Repeat your password',
                     ],
                     'row_attr' => [
                         'class' => 'form-floating',
                     ], 
                 ],
-                'invalid_message' => 'The password fields must match.',
+                'invalid_message' => $this->translator->trans('register.plainpassword_invalid_message'),
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Please enter a password',
+                        'message' => $this->translator->trans('register.please_enter_password'),
                     ]),
                     new Length([
-                        'min' => 6,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
+                        'min' => 8,
+                        'minMessage' => $this->translator->trans('register.password_length'),
                         // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),
                 ],
             ])
             ->add('agreeTerms', CheckboxType::class, [
+                'label' => $this->translator->trans('register.agree_terms'),
                 'mapped' => false,
                 'constraints' => [
                     new IsTrue([
-                        'message' => 'You should agree to our terms.',
+                        'message' => $this->translator->trans('register.should_agree_terms'),
                     ]),
                 ],
             ])
         ;
     }
-
+    
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

@@ -1,7 +1,7 @@
-{% extends 'base_security.html.twig' %} {% block title %}{{ title }}{% endblock %} {%
+{% extends 'base_security.html.twig' %} {% block title %}{{ 'login.title'|trans }}{% endblock %} {%
 block body %}
   <form method="post" class="mb-3">
-    <h1 class="h4 mb-3 fw-normal">{{ title }}</h1>
+    <h1 class="h4 mb-3 fw-normal">{{ 'login.title'|trans }}</h1>
     <div class="form-floating">
       <input
         type="email"
@@ -12,7 +12,7 @@ block body %}
         id="floatingEmail"
         value="{{ last_username }}"
       />
-      <label for="floatingEmail">Email address</label>
+      <label for="floatingEmail">{{ 'login.email'|trans }}</label>
     </div>
     <div class="form-floating mb-3">
       <input
@@ -23,17 +23,17 @@ block body %}
         class="form-control"
         id="floatingPassword"
       />
-      <a class="text-muted" href="{{ path('app_request_reset_password') }}">Forgot your password?</a>
-      <label for="floatingPassword">Password</label>
+      <a class="text-muted" href="{{ path('app_request_reset_password') }}">{{ 'login.password_forgot'|trans }}</a>
+      <label for="floatingPassword">{{ 'login.password'|trans }}</label>
     </div>
-    <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
+    <button class="btn btn-primary w-100 py-2" type="submit">{{ 'login.sign_in'|trans }}</button>
     <input type="hidden" name="_csrf_token"
     value="{{ csrf_token('authenticate') }}"
     >
   </form>
   <div class="text-center mt-2">
-    <span class="text-muted">No account yet?</span>
-    <a class="text-link" href="{{ path('app_register') }}">Register</a>
+    <span class="text-muted">{{ 'login.no_account'|trans }}</span>
+    <a class="text-link" href="{{ path('app_register') }}">{{ 'login.register'|trans }}</a>
   </div>
   {% if error %}
   {% if error.messageKey is not same as "An authentication exception occurred." %}
