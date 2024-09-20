@@ -28,4 +28,7 @@
       value="{{ csrf_token('authenticate') }}"
       >
     </form>
+    <div class="d-flex justify-content-between flex-column mt-3">
+      <a class="btn btn-link text-muted" href="{{ path('app_logout') }}">{{ "cancel"|trans({}, 'SchebTwoFactorBundle') }}</a>
+  </div>
   {% endblock %}

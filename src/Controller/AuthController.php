@@ -26,8 +26,7 @@ use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\Writer\WebPWriter;
 use Scheb\TwoFactorBundle\Model\Google\TwoFactorInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
+
 use App\Service\MailerService;
 
 class AuthController extends BaseController
@@ -35,28 +34,9 @@ class AuthController extends BaseController
     #[Route('/', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        $user = $this->getUser();
 
-        if($user && $user instanceof User){
-            if (in_array('ROLE_ADMIN',$this->getUser()->getRoles())) {
-                return $this->redirectToRoute('app_admin');
-            }
-    
-            if (in_array('ROLE_USER',$this->getUser()->getRoles())) {
-                return $this->redirectToRoute('app_user');
-            }
-        }
-
-        $id = 'element-fall';
-        $error = $authenticationUtils->getLastAuthenticationError();
-        
-        if($error){
-            $id = 'element-shake';
-        }   
-        //dd($error);
         return $this->render('security/login.html.twig', [
-            'error' => $error,
-            'id' => $id,
+            'error' => $authenticationUtils->getLastAuthenticationError(),
             'last_username' => $authenticationUtils->getLastUsername(),
             'title' => 'Sign in',
         ]);
@@ -86,7 +66,7 @@ class AuthController extends BaseController
                 ['id' => $user->getId()]
             );
 
-            $mailer->sendEmail($user, $signatureComponents->getSignedUrl());
+            $mailer->sendEmail($user, $signatureComponents->getSignedUrl(), 'Confirm your email address', 'verify_email');
             $this->addFlash('success', 'You have received an email to confirm your address. Please click the confirmation link in the email to complete your registration.');
             return $this->redirectToRoute('app_verify_resend_email');
         }
@@ -151,7 +131,7 @@ class AuthController extends BaseController
                 ['id' => $user->getId()]
             );
 
-            $mailer->sendEmail($user, $signatureComponents->getSignedUrl());
+            $mailer->sendEmail($user, $signatureComponents->getSignedUrl(), 'Confirm your email address', 'verify_email');
             $this->addFlash('success', 'You have received an email to confirm your address. Please click the confirmation link in the email to complete your registration.');
             return $this->redirectToRoute('app_verify_resend_email');
 
@@ -180,11 +160,8 @@ class AuthController extends BaseController
                     ['id' => $user->getId()]
                 );
                 
-
-                //$mailer->sendEmail($this->getUser(), $signatureComponents->getSignedUrl());
-                //$this->addFlash('success', 'You have received an email to confirm your address. Please click the confirmation link in the email to complete your registration.');
-                //TODO: send this as an email
-                $this->addFlash('success', 'Reset your password by clicking this link: ' . $signatureComponents->getSignedUrl());
+                $this->addFlash('success', 'You have received an email to reset your password. Please click the link in the email to reset your password.');
+                $mailer->sendEmail($user, $signatureComponents->getSignedUrl(), 'Reset password', 'reset_password');
                 return $this->redirectToRoute('app_request_reset_password_success');
             }
 
@@ -253,14 +230,10 @@ class AuthController extends BaseController
         $user = $this->getUser();
         
         if(!$user->isGoogleAuthenticatorEnabled()){
-            
-            
-            
+
             if (!($user instanceof TwoFactorInterface)) {
                 throw new NotFoundHttpException('Cannot display QR code');
             }
-
-            
 
             if ($request->isMethod('POST')) {
                 if($googleAuthenticator->checkCode($user, $request->request->get('code'))){

@@ -18,13 +18,13 @@ class MailerService
 
     
     
-    public function sendEmail(User $user, $link)
+    public function sendEmail(User $user, $link, $subject, $template)
     {
         $email = (new TemplatedEmail())
         ->from(new Address('portfolio@app.com'))
         ->to($user->getEmail()) // Deine Gmail-Adresse
-        ->subject('Confirm your email address')
-        ->htmlTemplate('/email/verify_email.html.twig')
+        ->subject($subject)
+        ->htmlTemplate('/email/'.$template.'.html.twig')
         ->context([
             'user' => $user,
             'link' => $link,
