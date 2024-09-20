@@ -1,6 +1,5 @@
 {% extends 'base_security.html.twig' %} {% block title %}{{ title }}{% endblock %} {%
 block body %}
-<div id="{{id}}">
   <form method="post" class="mb-3">
     <h1 class="h4 mb-3 fw-normal">{{ title }}</h1>
     <div class="form-floating">
@@ -37,10 +36,12 @@ block body %}
     <a class="text-link" href="{{ path('app_register') }}">Register</a>
   </div>
   {% if error %}
+  {% if error.messageKey is not same as "An authentication exception occurred." %}
   <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
     {{ error.messageKey|trans(error.messageData, 'security') }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
+ {% endif %}
   {% endif %}
 </div>
 {% endblock %}

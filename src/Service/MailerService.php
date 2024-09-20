@@ -18,15 +18,17 @@ class MailerService
 
     
     
-    public function sendEmail()
+    public function sendEmail(User $user, $link)
     {
         $email = (new TemplatedEmail())
-        ->from(new Address('ryan@example.com'))
-        ->to('sgrauthoff@gmail.com') // Deine Gmail-Adresse
-        ->subject('Test Email')
-        ->text('This is a test email.')
-        ->htmlTemplate('/admin/test.html.twig');
-
+        ->from(new Address('portfolio@app.com'))
+        ->to($user->getEmail()) // Deine Gmail-Adresse
+        ->subject('Confirm your email address')
+        ->htmlTemplate('/email/verify_email.html.twig')
+        ->context([
+            'user' => $user,
+            'link' => $link,
+        ]);
         $this->mailer->send($email);
     }
 }

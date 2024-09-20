@@ -47,9 +47,9 @@ class CheckVerifiedUserSubscriber implements EventSubscriberInterface
         }
        
         $response = new RedirectResponse(
-            $this->router->generate('app_verify_resend_email')
+            $this->router->generate('app_verify_resend_email', ['auth' => false])
         );
-        
+  
 
         $event->setResponse($response);
     }

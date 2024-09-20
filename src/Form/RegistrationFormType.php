@@ -23,7 +23,7 @@ class RegistrationFormType extends AbstractType
             ->add('firstname',  TextType::class, [
                 'attr' => [
                     'placeholder' => 'Enter your firstname',
-                    'class' => 'rounded-top'
+                    'class' => 'rounded-top rounded-bottom-0'
                 ],
                 'row_attr' => [
                     'class' => 'form-floating',

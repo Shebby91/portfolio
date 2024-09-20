@@ -28,6 +28,7 @@ use Scheb\TwoFactorBundle\Model\Google\TwoFactorInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use App\Service\MailerService;
 
 class AuthController extends BaseController
 {
@@ -52,7 +53,7 @@ class AuthController extends BaseController
         if($error){
             $id = 'element-shake';
         }   
-
+        //dd($error);
         return $this->render('security/login.html.twig', [
             'error' => $error,
             'id' => $id,
@@ -62,7 +63,7 @@ class AuthController extends BaseController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, VerifyEmailHelperInterface $verifyEmailHelper): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, VerifyEmailHelperInterface $verifyEmailHelper, Mailerservice $mailer): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -85,8 +86,8 @@ class AuthController extends BaseController
                 ['id' => $user->getId()]
             );
 
-            //TODO: send this as an email
-            $this->addFlash('success', 'Confirm your email at: ' . $signatureComponents->getSignedUrl());
+            $mailer->sendEmail($user, $signatureComponents->getSignedUrl());
+            $this->addFlash('success', 'You have received an email to confirm your address. Please click the confirmation link in the email to complete your registration.');
             return $this->redirectToRoute('app_verify_resend_email');
         }
 
@@ -126,17 +127,15 @@ class AuthController extends BaseController
         }
         
         $user->setIsVerified(true);
-
         $em->flush();
         
-        //MailerService::
-
-        $this->addFlash('success', 'Email verfied! You can now log in and set up your two factor authentication.');
-        return $this->redirectToRoute('app_login');
+        return $this->redirectToRoute('app_login', [
+            'auth' => true
+        ]);
     }
 
     #[Route('/verify/resend', name: 'app_verify_resend_email')]
-    public function resendVerifyEmail(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, UserRepository $userRepository, AuthenticationUtils $authenticationUtils)
+    public function resendVerifyEmail(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, UserRepository $userRepository, AuthenticationUtils $authenticationUtils, Mailerservice $mailer)
     {
         if ($request->isMethod('POST') && filter_var($authenticationUtils->getLastUsername(), FILTER_VALIDATE_EMAIL)) {
             $user = $userRepository->findOneBy(['email' => $authenticationUtils->getLastUsername()]);
@@ -152,8 +151,8 @@ class AuthController extends BaseController
                 ['id' => $user->getId()]
             );
 
-            //TODO: send this as an email
-            $this->addFlash('success', 'Confirm your email at: ' . $signatureComponents->getSignedUrl());
+            $mailer->sendEmail($user, $signatureComponents->getSignedUrl());
+            $this->addFlash('success', 'You have received an email to confirm your address. Please click the confirmation link in the email to complete your registration.');
             return $this->redirectToRoute('app_verify_resend_email');
 
         }
@@ -164,7 +163,7 @@ class AuthController extends BaseController
     }
 
     #[Route('/verify/request', name: 'app_request_reset_password')]
-    public function resetPassword(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, UserRepository $userRepository, AuthenticationUtils $authenticationUtils)
+    public function resetPassword(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, UserRepository $userRepository, AuthenticationUtils $authenticationUtils, Mailerservice $mailer)
     {
         if ($request->isMethod('POST')) {
             if (filter_var($request->request->get('email'), FILTER_VALIDATE_EMAIL)) {
@@ -180,7 +179,10 @@ class AuthController extends BaseController
                     $user->getEmail(),
                     ['id' => $user->getId()]
                 );
-    
+                
+
+                //$mailer->sendEmail($this->getUser(), $signatureComponents->getSignedUrl());
+                //$this->addFlash('success', 'You have received an email to confirm your address. Please click the confirmation link in the email to complete your registration.');
                 //TODO: send this as an email
                 $this->addFlash('success', 'Reset your password by clicking this link: ' . $signatureComponents->getSignedUrl());
                 return $this->redirectToRoute('app_request_reset_password_success');
@@ -235,8 +237,6 @@ class AuthController extends BaseController
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
             $em->flush();
 
-
-            //TODO: send this as an email
             $this->addFlash('success', 'Password successfully resetted. Try to login again.');
             return $this->redirectToRoute('app_login');
         }

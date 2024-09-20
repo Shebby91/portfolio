@@ -14,11 +14,11 @@ use Symfony\Component\Routing\Attribute\Route;
 class AdminController extends AbstractController
 {
     #[Route('/admin', name: 'app_admin')]
-    public function admin(UserRepository $userRepository, Mailerservice $mailer): Response
+    public function admin(UserRepository $userRepository): Response
     {
         $this->getUser();
         
-        $mailer->sendEmail($this->getUser());
+
         $users = $userRepository->findAll();
         //dd($userRepository->findAll());
         return $this->render('admin/admin.html.twig', [

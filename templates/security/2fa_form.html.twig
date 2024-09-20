@@ -1,7 +1,7 @@
 {% extends 'base_security.html.twig' %}
 {% block title %}Two Factor Authentication{% endblock %}
 {% block body %}
-<div id="element-fall" {% if authenticationError %}id="element-shake"{% endif %}>
+
   <form action="{{ checkPathUrl ? checkPathUrl: path(checkPathRoute) }}" method="post" class="mb-3">
     <h1 class="h4 mb-3 fw-normal">Two Factor Authentication</h1>
     <div class="form-floating mb-3">
@@ -33,6 +33,5 @@
     {{ authenticationError|trans(authenticationErrorData, 'SchebTwoFactorBundle') }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
    </div>
-</div>
   {% endif %}
 {% endblock %}
