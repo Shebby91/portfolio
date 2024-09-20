@@ -129,6 +129,8 @@ class AuthController extends BaseController
 
         $em->flush();
         
+        //MailerService::
+
         $this->addFlash('success', 'Email verfied! You can now log in and set up your two factor authentication.');
         return $this->redirectToRoute('app_login');
     }
@@ -314,20 +316,5 @@ class AuthController extends BaseController
             ->build();
 
         return $result->getDataUri();;
-    }
-
-    #[Route('/send-email', name: 'send_email')]
-    public function sendEmail(MailerInterface $mailer): Response
-    {
-        $email = (new Email())
-            ->from('portfolio@app.com')
-            ->to('sgrauthoff@gmail.com') // Deine Gmail-Adresse
-            ->subject('Test Email')
-            ->text('This is a test email.')
-            ->html('<p>This is a test email from Symfony Mailer.</p>');
-        //dd($email);
-        $mailer->send($email);
-
-        return new Response('Email sent successfully.');
     }
 }
