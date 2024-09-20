@@ -31,3 +31,7 @@ sudo docker-compose down
 #php bin/console make:fixtures
 
 #php bin/console make:factory
+
+php bin/console messenger:consume async
+
+php bin/console messenger:failed:show

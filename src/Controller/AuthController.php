@@ -26,6 +26,8 @@ use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\Writer\WebPWriter;
 use Scheb\TwoFactorBundle\Model\Google\TwoFactorInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 class AuthController extends BaseController
 {
@@ -312,5 +314,20 @@ class AuthController extends BaseController
             ->build();
 
         return $result->getDataUri();;
+    }
+
+    #[Route('/send-email', name: 'send_email')]
+    public function sendEmail(MailerInterface $mailer): Response
+    {
+        $email = (new Email())
+            ->from('portfolio@app.com')
+            ->to('sgrauthoff@gmail.com') // Deine Gmail-Adresse
+            ->subject('Test Email')
+            ->text('This is a test email.')
+            ->html('<p>This is a test email from Symfony Mailer.</p>');
+        //dd($email);
+        $mailer->send($email);
+
+        return new Response('Email sent successfully.');
     }
 }
