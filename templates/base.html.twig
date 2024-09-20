@@ -22,7 +22,7 @@
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
         {% block nav %}
         {% endblock %}
-        <main class="px-3">
+        <main class="px-0">
             {% block body %}
             {% endblock %}
             {% for flash in app.flashes('success') %}

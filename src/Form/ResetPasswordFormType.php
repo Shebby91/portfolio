@@ -25,7 +25,7 @@ class ResetPasswordFormType extends AbstractType
                 'label' => 'Password',
                 'attr' => [
                     'autocomplete' => 'new-password',
-                    'class' => 'rounded-top mb-0'
+                    'class' => 'rounded-top rounded-bottom-0 mb-0'
                 ],
                 'row_attr' => [
                     'class' => 'form-floating',
