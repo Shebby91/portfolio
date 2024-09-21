@@ -1,9 +1,9 @@
 {% extends 'base_security.html.twig' %}
-{% block title %}Two Factor Authentication{% endblock %}
+{% block title %}{{ '2fa_form.title'|trans }}{% endblock %}
 {% block body %}
 
   <form action="{{ checkPathUrl ? checkPathUrl: path(checkPathRoute) }}" method="post" class="mb-3">
-    <h1 class="h4 mb-3 fw-normal">Two Factor Authentication</h1>
+    <h1 class="h4 mb-3 fw-normal">{{ '2fa_form.title'|trans }}</h1>
     <div class="form-floating mb-3">
         <input
             id="_auth_code"
@@ -15,7 +15,7 @@
             pattern="[0-9]*"
             class="form-control"
         />
-        <label for="_auth_code">Two factor code</label>
+        <label for="_auth_code">{{ '2fa_form.code'|trans }}</label>
     </div>
     {% if displayTrustedOption %}
         <p class="widget"><label for="_trusted"><input id="_trusted" type="checkbox" name="{{ trustedParameterName }}" /> {{ "trusted"|trans({}, 'SchebTwoFactorBundle') }}</label></p>
@@ -24,7 +24,7 @@
         <input type="hidden" name="{{ csrfParameterName }}" value="{{ csrf_token(csrfTokenId) }}">
     {% endif %}
     <div class="d-flex justify-content-between flex-column">
-        <button type="submit" class="btn btn-primary w-100 py-2">{{ "login"|trans({}, 'SchebTwoFactorBundle') }}</button>
+        <button type="submit" class="btn btn-primary w-100 py-2">{{ '2fa_form.sign_in'|trans }}</button>
         <a class="btn btn-link text-muted" href="{{ logoutPath }}">{{ "cancel"|trans({}, 'SchebTwoFactorBundle') }}</a>
     </div>
   </form>

@@ -23,3 +23,26 @@ register:
   already_have_account: 'Already have an account?'
   sign_in: 'Sing in'
   
+
+verify_request:
+  title: 'Reqeust reset password'
+  email: 'Email address'
+  hint: 'You will receive an email soon.'
+  reset_password: 'Reset password'
+  register: 'Register'
+  no_account: 'No account yet?'
+  already_have_account: 'Already have an account?'
+  sign_in: 'Sing in'
+
+resend_verify_email:
+  title: Verify Email
+  message: 'An email was sent, please click it to enable your account before logging in.'
+  sign_in: 'Sign in'
+  re_send: 'Re-send'
+  email: 'Email?'
+  flash: 'You have received an email to confirm your address. Please click the confirmation link in the email to complete your registration.'
+
+2fa_form:
+  title: 'Two Factor Authentication'
+  code: 'Two factor code'
+  sign_in: 'Sign in'

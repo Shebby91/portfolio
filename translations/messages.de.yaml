@@ -22,3 +22,26 @@ register:
   register: 'Registrieren'
   already_have_account: 'Bereits ein Profil?'
   sign_in: 'Anmelden'
+
+verify_request:
+  title: 'Passwort zurücksetzen'
+  email: 'E-Mail'
+  hint: 'Du wirst bald eine E-Mail erhalten um dein Passwort zurück zu setzen.'
+  reset_password: 'Passwort zurücksetzen'
+  register: 'Registrieren'
+  no_account: 'Noch kein Profil?'
+  already_have_account: 'Bereits ein Profil?'
+  sign_in: 'Anmelden'
+
+resend_verify_email:
+  title: 'E-Mail bestätigen'
+  message: 'Eine E-Mail wurde versendet. Bitte klicke auf den darin enthaltenen Link, um dein Konto zu aktivieren, bevor du dich einloggst.'
+  sign_in: 'Anmelden'
+  re_send: 'erneut senden?'
+  email: 'E-Mail'
+  flash: 'Du hast eine E-Mail zur Bestätigung deiner Adresse erhalten. Bitte klicke auf den Bestätigungslink in der E-Mail, um deine Registrierung abzuschließen.'
+
+2fa_form:
+  title: '2-Faktor Authentifizierung'
+  code: 'Zwei-Faktor-Code'
+  sign_in: 'Anmelden'

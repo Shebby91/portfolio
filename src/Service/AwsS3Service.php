@@ -18,16 +18,15 @@ class AwsS3Service
                 'secret' => $awsSecret,
             ],
             'endpoint' => $awsEndpoint,
-            'use_path_style_endpoint' => true, // wichtig für LocalStack
+            'use_path_style_endpoint' => true,
         ]);
     }
 
     public function createBucket(string $bucketName)
     {
 
-        
         try {
-            $result = $this->s3Client->createBucket(['Bucket' => 'my-bucket']);
+            $result = $this->s3Client->createBucket(['Bucket' => $bucketName]);
             return "Bucket created: " . $result['Location'];
         } catch (AwsException $e) {
             return $e->getMessage();
@@ -36,17 +35,14 @@ class AwsS3Service
 
     public function checkOrCreateBucket(string $bucketName)
     {
-        // Liste der vorhandenen Buckets abrufen
         $buckets = $this->s3Client->listBuckets();
- 
-        // Überprüfen, ob der Bucket bereits existiert
+
         foreach ($buckets['Buckets'] as $bucket) {
             if ($bucket['Name'] === $bucketName) {
                 return "Bucket '$bucketName' exists.";
             }
         }
 
-        // Bucket erstellen, wenn er nicht existiert
         try {
             $result = $this->s3Client->createBucket(['Bucket' => $bucketName]);
             return "Bucket created: " . $result['Location'];
@@ -57,11 +53,9 @@ class AwsS3Service
 
     public function deleteBucket(string $bucketName)
     {
-        // Zuerst alle Objekte im Bucket auflisten und löschen
         $objects = $this->s3Client->listObjects(['Bucket' => $bucketName]);
 
         if (isset($objects['Contents']) && count($objects['Contents']) > 0) {
-            // Objekte im Bucket löschen
             foreach ($objects['Contents'] as $object) {
                 $this->s3Client->deleteObject([
                     'Bucket' => $bucketName,
@@ -70,7 +64,6 @@ class AwsS3Service
             }
         }
 
-        // Danach den Bucket löschen
         try {
             $this->s3Client->deleteBucket(['Bucket' => $bucketName]);
             return "Bucket '$bucketName' deleted successfully.";
@@ -86,8 +79,8 @@ class AwsS3Service
         try {
             $this->s3Client->putObject([
                 'Bucket' => $bucketName,
-                'Key'    => $key, // Hier ist der Key
-                'SourceFile' => $filePath, // Pfad zur Datei, die hochgeladen werden soll
+                'Key'    => $key,
+                'SourceFile' => $filePath,
             ]);
     
             return "Datei erfolgreich hochgeladen: $key";
@@ -104,7 +97,6 @@ class AwsS3Service
                 'Key'    => $key,
             ]);
 
-            // Speichere die heruntergeladene Datei
             file_put_contents($savePath, $result['Body']);
             return "Datei erfolgreich heruntergeladen: $key";
         } catch (AwsException $e) {
@@ -125,10 +117,10 @@ class AwsS3Service
                     $files[] = [
                         'key' => $object['Key'],
                         'url' => $this->s3Client->getObjectUrl($bucketName, $object['Key']),
-                    ]; // Hier wird die URL zu jeder Datei generiert
+                    ];
                 }
             }
-            //dd($this->s3Client->getObjectUrl($bucketName, $object['Key']));
+
             return $files;
         } catch (AwsException $e) {
             return $e->getMessage();

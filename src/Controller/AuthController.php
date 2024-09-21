@@ -28,6 +28,7 @@ use Scheb\TwoFactorBundle\Model\Google\TwoFactorInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use App\Service\MailerService;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AuthController extends BaseController
 {
@@ -43,7 +44,7 @@ class AuthController extends BaseController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, VerifyEmailHelperInterface $verifyEmailHelper, Mailerservice $mailer): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, VerifyEmailHelperInterface $verifyEmailHelper, Mailerservice $mailer, TranslatorInterface $translator): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -72,7 +73,7 @@ class AuthController extends BaseController
             );
 
             $mailer->sendEmail($user, $signatureComponents->getSignedUrl(), 'Confirm your email address', 'verify_email');
-            $this->addFlash('success', 'You have received an email to confirm your address. Please click the confirmation link in the email to complete your registration.');
+            $this->addFlash('success', $translator->trans('resend_verify_email.flash'));
             return $this->redirectToRoute('app_verify_resend_email');
         }
 
@@ -120,7 +121,7 @@ class AuthController extends BaseController
     }
 
     #[Route('/verify/resend', name: 'app_verify_resend_email')]
-    public function resendVerifyEmail(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, UserRepository $userRepository, AuthenticationUtils $authenticationUtils, Mailerservice $mailer)
+    public function resendVerifyEmail(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, UserRepository $userRepository, AuthenticationUtils $authenticationUtils, Mailerservice $mailer, TranslatorInterface $translator)
     {
         if ($request->isMethod('POST') && filter_var($authenticationUtils->getLastUsername(), FILTER_VALIDATE_EMAIL)) {
             $user = $userRepository->findOneBy(['email' => $authenticationUtils->getLastUsername()]);
@@ -137,7 +138,7 @@ class AuthController extends BaseController
             );
 
             $mailer->sendEmail($user, $signatureComponents->getSignedUrl(), 'Confirm your email address', 'verify_email');
-            $this->addFlash('success', 'You have received an email to confirm your address. Please click the confirmation link in the email to complete your registration.');
+            $this->addFlash('success', $translator->trans('resend_verify_email.flash'));
             return $this->redirectToRoute('app_verify_resend_email');
 
         }
