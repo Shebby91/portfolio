@@ -10,7 +10,6 @@ class AwsS3Service
 
     public function __construct(string $awsKey, string $awsSecret, string $awsEndpoint)
     {
-       //dd($awsEndpoint);
         $this->s3Client = new S3Client([
             'version' => 'latest',
             'region'  => 'us-east-1',
