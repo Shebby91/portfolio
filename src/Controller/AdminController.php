@@ -25,7 +25,6 @@ class AdminController extends AbstractController
         return $this->render('admin/admin.html.twig', [
             'title' => 'Admin',
             'users' => $users,
-
         ]);
     }
 

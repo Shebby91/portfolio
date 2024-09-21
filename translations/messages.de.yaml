@@ -45,3 +45,9 @@ resend_verify_email:
   title: '2-Faktor Authentifizierung'
   code: 'Zwei-Faktor-Code'
   sign_in: 'Anmelden'
+
+enable_two_factor:
+  title: 'Authentifizierung einrichten'
+  code: 'Zwei-Faktor-Code'
+  hint: 'Verwenden Sie die Google Authenticator App, um den oben angezeigten QR-Code zu scannen.'
+  complete_setup: 'Einrichung abschließen'
