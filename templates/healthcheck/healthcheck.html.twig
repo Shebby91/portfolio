@@ -28,6 +28,19 @@
               {% endif %}
             </td>
             </tr>
+            <tr>
+              <td class="text-left">
+                {{ s3Status.message }}
+            </td>
+              <td>
+                {% if s3Status.status == true %}
+                <span class="badge text-bg-success text-success">1</span>
+                {% else %}
+                <span class="badge text-bg-danger text-danger">0</span>
+                {{ error }}
+              {% endif %}
+            </td>
+            </tr>
           </tbody>
         </table>
   </div>

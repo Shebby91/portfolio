@@ -148,4 +148,14 @@ class AwsS3Service
             return "Fehler beim Löschen der Datei: " . $e->getMessage();
         }
     }
+
+    public function listBuckets()
+    {
+        try {
+            $result = $this->s3Client->listBuckets();
+            return $result['Buckets'];
+        } catch (AwsException $e) {
+            throw new \RuntimeException('Error listing buckets: ' . $e->getMessage());
+        }
+    }
 }

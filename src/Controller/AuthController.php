@@ -50,9 +50,14 @@ class AuthController extends BaseController
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if (!filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) {
+                $this->addFlash('error', 'Invalid email address.');
+                return $this->redirectToRoute('app_register');
+            }
+
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
-
             // encode the plain password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
