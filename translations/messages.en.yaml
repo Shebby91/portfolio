@@ -1,0 +1,25 @@
+login:
+  title: 'Sign in'
+  email: 'Email address'
+  password: 'Password'
+  password_forgot: 'Forgot your password?'
+  sign_in: 'Sign in'
+  no_account: 'No account yet?'
+  register: 'Register'
+
+register:
+  title: 'Register'
+  firstname: 'Firstname'
+  lastname: 'Lastname'
+  email: 'Email address'
+  password: 'Password'
+  password_repeat: 'Repeat password'
+  agree_terms: Agree terms
+  should_agree_terms: 'Please agree our terms.'
+  plainpassword_invalid_message: 'The password fields must match.'
+  please_enter_password: 'Please enter a password'
+  password_length: 'Your password should be at least 8 characters'
+  register: 'Register'
+  already_have_account: 'Already have an account?'
+  sign_in: 'Sing in'
+  

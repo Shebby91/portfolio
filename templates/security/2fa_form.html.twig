@@ -1,0 +1,37 @@
+{% extends 'base_security.html.twig' %}
+{% block title %}Two Factor Authentication{% endblock %}
+{% block body %}
+
+  <form action="{{ checkPathUrl ? checkPathUrl: path(checkPathRoute) }}" method="post" class="mb-3">
+    <h1 class="h4 mb-3 fw-normal">Two Factor Authentication</h1>
+    <div class="form-floating mb-3">
+        <input
+            id="_auth_code"
+            type="text"
+            name="{{ authCodeParameterName }}"
+            placeholder="name@example.com"
+            autocomplete="one-time-code"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            class="form-control"
+        />
+        <label for="_auth_code">Two factor code</label>
+    </div>
+    {% if displayTrustedOption %}
+        <p class="widget"><label for="_trusted"><input id="_trusted" type="checkbox" name="{{ trustedParameterName }}" /> {{ "trusted"|trans({}, 'SchebTwoFactorBundle') }}</label></p>
+    {% endif %}
+    {% if isCsrfProtectionEnabled %}
+        <input type="hidden" name="{{ csrfParameterName }}" value="{{ csrf_token(csrfTokenId) }}">
+    {% endif %}
+    <div class="d-flex justify-content-between flex-column">
+        <button type="submit" class="btn btn-primary w-100 py-2">{{ "login"|trans({}, 'SchebTwoFactorBundle') }}</button>
+        <a class="btn btn-link text-muted" href="{{ logoutPath }}">{{ "cancel"|trans({}, 'SchebTwoFactorBundle') }}</a>
+    </div>
+  </form>
+  {% if authenticationError %}
+  <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+    {{ authenticationError|trans(authenticationErrorData, 'SchebTwoFactorBundle') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+   </div>
+  {% endif %}
+{% endblock %}
