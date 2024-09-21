@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-100" data-bs-theme="dark">
-
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,11 +17,17 @@
     {% endblock %}
 </head>
 
-<body class="d-flex h-100 text-center text-bg-dark">
-    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-        {% block nav %}
-        {% endblock %}
-        <main class="px-0">
+<body class="d-flex align-items-center bg-body-tertiary bg-img">
+    <main class="form-signin w-100 m-auto">
+        <div {% if error is defined and error is not null %}
+                 {% if error.messageKey is not same as "An authentication exception occurred." %}
+                    id="element-shake"
+                {% else %}
+                    id="element-fall"
+                {% endif %} 
+            {% else %}
+                id="element-fall"
+            {% endif %}>
             {% block body %}
             {% endblock %}
             {% for flash in app.flashes('success') %}
@@ -37,11 +42,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             {% endfor %}
-        </main>
-        {% block footer %}
-                {% include "base_footer.html.twig" %}
-        {% endblock %}
-    </div>
+        </div>
+    </main>
 </body>
 
 </html>

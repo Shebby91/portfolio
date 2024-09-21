@@ -57,6 +57,13 @@ services:
     networks:
       - backend
 
+  messenger:
+    image: portfolio-app
+    command: ["php", "bin/console", "messenger:consume", "async"]
+    restart: always
+    networks:
+      - backend
+
 volumes:
   db_prod_data:
   db_test_data:

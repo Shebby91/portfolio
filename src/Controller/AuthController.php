@@ -7,7 +7,7 @@ use App\Form\RegistrationFormType;
 use App\Form\ResetPasswordFormType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Controller\BaseController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -15,12 +15,26 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
+use Scheb\TwoFactorBundle\Security\TwoFactor\Provider\Google\GoogleAuthenticatorInterface;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\Label\LabelAlignment;
+use Endroid\QrCode\Label\Font\NotoSans;
+use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Writer\WebPWriter;
+use Scheb\TwoFactorBundle\Model\Google\TwoFactorInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class AuthController extends AbstractController
+use App\Service\MailerService;
+
+class AuthController extends BaseController
 {
     #[Route('/', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
+
         return $this->render('security/login.html.twig', [
             'error' => $authenticationUtils->getLastAuthenticationError(),
             'last_username' => $authenticationUtils->getLastUsername(),
@@ -29,7 +43,7 @@ class AuthController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, VerifyEmailHelperInterface $verifyEmailHelper): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, VerifyEmailHelperInterface $verifyEmailHelper, Mailerservice $mailer): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -45,7 +59,6 @@ class AuthController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // do anything else you need here, like send an email
             $signatureComponents = $verifyEmailHelper->generateSignature(
                 'app_verify_email',
                 $user->getId(),
@@ -53,9 +66,9 @@ class AuthController extends AbstractController
                 ['id' => $user->getId()]
             );
 
-            //TODO: send this as an email
-            $this->addFlash('success', 'Confirm your email at: ' . $signatureComponents->getSignedUrl());
-            return $this->redirectToRoute('app_login');
+            $mailer->sendEmail($user, $signatureComponents->getSignedUrl(), 'Confirm your email address', 'verify_email');
+            $this->addFlash('success', 'You have received an email to confirm your address. Please click the confirmation link in the email to complete your registration.');
+            return $this->redirectToRoute('app_verify_resend_email');
         }
 
         return $this->render('security/register.html.twig', [
@@ -77,9 +90,7 @@ class AuthController extends AbstractController
     {
         $user = $userRepository->find($request->query->get('id'));
         
-
-
-        if (!$user instanceof User) {
+        if (!($user instanceof User)) {
             throw new \Exception('Unexpected user type');
         }
         
@@ -96,20 +107,20 @@ class AuthController extends AbstractController
         }
         
         $user->setIsVerified(true);
-
         $em->flush();
         
-        $this->addFlash('success', 'Account verfied! You can now log in.');
-        return $this->redirectToRoute('app_login');
+        return $this->redirectToRoute('app_login', [
+            'auth' => true
+        ]);
     }
 
     #[Route('/verify/resend', name: 'app_verify_resend_email')]
-    public function resendVerifyEmail(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, UserRepository $userRepository, AuthenticationUtils $authenticationUtils)
+    public function resendVerifyEmail(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, UserRepository $userRepository, AuthenticationUtils $authenticationUtils, Mailerservice $mailer)
     {
         if ($request->isMethod('POST') && filter_var($authenticationUtils->getLastUsername(), FILTER_VALIDATE_EMAIL)) {
             $user = $userRepository->findOneBy(['email' => $authenticationUtils->getLastUsername()]);
 
-            if (!$user instanceof User) {
+            if (!($user instanceof User)) {
                 throw new \Exception('Unexpected user type');
             }
 
@@ -120,25 +131,25 @@ class AuthController extends AbstractController
                 ['id' => $user->getId()]
             );
 
-            //TODO: send this as an email
-            $this->addFlash('success', 'Confirm your email at: ' . $signatureComponents->getSignedUrl());
-            return $this->redirectToRoute('app_login');
+            $mailer->sendEmail($user, $signatureComponents->getSignedUrl(), 'Confirm your email address', 'verify_email');
+            $this->addFlash('success', 'You have received an email to confirm your address. Please click the confirmation link in the email to complete your registration.');
+            return $this->redirectToRoute('app_verify_resend_email');
 
         }
-        
+
         return $this->render('security/resend_verify_email.html.twig', [
-            'title' => 'Resend Email'
+            'title' => 'Verify Email'
         ]);
     }
 
     #[Route('/verify/request', name: 'app_request_reset_password')]
-    public function resetPassword(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, UserRepository $userRepository, AuthenticationUtils $authenticationUtils)
+    public function resetPassword(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, UserRepository $userRepository, AuthenticationUtils $authenticationUtils, Mailerservice $mailer)
     {
         if ($request->isMethod('POST')) {
-            if (filter_var($authenticationUtils->getLastUsername(), FILTER_VALIDATE_EMAIL)) {
-                $user = $userRepository->findOneBy(['email' => $authenticationUtils->getLastUsername()]);
+            if (filter_var($request->request->get('email'), FILTER_VALIDATE_EMAIL)) {
+                $user = $userRepository->findOneBy(['email' => $request->request->get('email'),]);
                 
-                if (!$user instanceof User) {
+                if (!($user instanceof User)) {
                     throw new \Exception('Unexpected user type');
                 }
     
@@ -148,9 +159,9 @@ class AuthController extends AbstractController
                     $user->getEmail(),
                     ['id' => $user->getId()]
                 );
-    
-                //TODO: send this as an email
-                $this->addFlash('success', 'Reset your password by clicking this link: ' . $signatureComponents->getSignedUrl());
+                
+                $this->addFlash('success', 'You have received an email to reset your password. Please click the link in the email to reset your password.');
+                $mailer->sendEmail($user, $signatureComponents->getSignedUrl(), 'Reset password', 'reset_password');
                 return $this->redirectToRoute('app_request_reset_password_success');
             }
 
@@ -203,20 +214,80 @@ class AuthController extends AbstractController
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
             $em->flush();
 
-
-            //TODO: send this as an email
             $this->addFlash('success', 'Password successfully resetted. Try to login again.');
             return $this->redirectToRoute('app_login');
         }
 
-        //$user->setIsVerified(true);
-        //$em->flush();
-        
-        //$this->addFlash('success', 'Account verfied! You can now log in.');
-        //return $this->redirectToRoute('app_login');
         return $this->render('security/reset_password.html.twig', [
             'title' => 'Reset Password',
             'resetPasswordForm' => $form,
         ]);
+    }
+
+    #[Route('/enable/2fa', name: 'app_enable_2fa')]
+    public function enable2fa(Request $request, UserRepository $userRepository, GoogleAuthenticatorInterface $googleAuthenticator, EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+        
+        if(!$user->isGoogleAuthenticatorEnabled()){
+
+            if (!($user instanceof TwoFactorInterface)) {
+                throw new NotFoundHttpException('Cannot display QR code');
+            }
+
+            if ($request->isMethod('POST')) {
+                if($googleAuthenticator->checkCode($user, $request->request->get('code'))){
+                    $user->setIsTwoFactorEnabled(true);
+                    $em->flush();
+    
+                    if (in_array('ROLE_ADMIN',$user->getRoles())) {
+                        return $this->redirectToRoute('app_admin');
+                    }
+    
+                    return $this->redirectToRoute('app_user');
+                }
+                $this->addFlash('error', 'Code expired. Please try again.');
+                return $this->redirectToRoute('app_enable_2fa');
+            };
+
+            $secret = $googleAuthenticator->generateSecret();
+            $user->setGoogleAuthenticatorSecret($secret);
+
+            $em->flush();
+
+            return $this->render('security/enable_two_factor.html.twig', [
+                'qr' => $this->displayQrCode($googleAuthenticator->getQRContent($user)),
+                'checkPathUrl' => '2fa_check',
+                'title' => 'Setup Authenticator',
+            ]);
+        }
+
+        return $this->render('security/enable_two_factor.html.twig', [
+            'title' => 'Enable 2FA',
+            'resetPasswordForm' => '$form',
+        ]);
+    }
+
+    private function displayQrCode(string $qrCodeContent)
+    {
+        $result = Builder::create()
+            ->writer(new WebPWriter())
+            ->writerOptions(['quality' => 100])
+            ->data($qrCodeContent)
+            ->encoding(new Encoding('UTF-8'))
+            ->errorCorrectionLevel(ErrorCorrectionLevel::High)
+            ->size(300)
+            ->margin(0)
+            ->roundBlockSizeMode(RoundBlockSizeMode::Margin)
+            //->logoPath($this->getParameter('kernel.project_dir').'/assets/images/symfony.jpg')
+            //->logoResizeToWidth(20)
+            //->logoPunchoutBackground(true)
+            //->labelText('This is the label')
+            //->labelFont(new NotoSans(20))
+            //->labelAlignment(LabelAlignment::Center)
+            ->validateResult(true)
+            ->build();
+
+        return $result->getDataUri();;
     }
 }

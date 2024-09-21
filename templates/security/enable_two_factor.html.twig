@@ -1,0 +1,34 @@
+{% extends 'base_security.html.twig' %} {% block title %}{{ title }}{% endblock %} {%
+  block body %}
+
+
+    <form method="post">
+      <h1 class="h4 mb-3 fw-normal">{{ title }}</h1>
+      
+      {% if qr is defined %}
+      <img src="{{qr}}" class="img-fluid rounded-top border" alt="qr-code-to-scan">
+      {% endif %}
+      <div class="form-floating mb-3">
+        <input
+          type="text"
+          name="code"
+          placeholder="Two factor code"
+          required
+          class="form-control rounded-top-0"
+          id="floatingCode"
+          inputmode="numeric"
+          pattern="[0-9]*"
+          autocomplete="one-time-code"
+        />
+        <label for="floatingCode">Two factor code</label>
+      </div>
+      <span class="text-muted">Use Google Authenticator to Scan the QR Code above.</span>
+      <button class="btn btn-primary w-100 py-2 mt-3" type="submit">Complete Setup</button>
+      <input type="hidden" name="_csrf_token"
+      value="{{ csrf_token('authenticate') }}"
+      >
+    </form>
+    <div class="d-flex justify-content-between flex-column mt-3">
+      <a class="btn btn-link text-muted" href="{{ path('app_logout') }}">{{ "cancel"|trans({}, 'SchebTwoFactorBundle') }}</a>
+  </div>
+  {% endblock %}

@@ -1,21 +1,22 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_security.html.twig' %}
 
-{% block title %}{{title}}{% endblock %}
+{% block title %}{{ 'register.title'|trans }}{% endblock %}
 
 {% block body %}
-    <form method="post" class="mb-3">
-    <h1 class="h4 mb-3 fw-normal">{{ title }}</h1>
-    {{ form_row(registrationForm.firstname) }}
-    {{ form_row(registrationForm.lastname) }}
-    {{ form_row(registrationForm.email) }}
-    {{ form_row(registrationForm.plainPassword) }}
-    {{ form_row(registrationForm.agreeTerms) }}
-      <div class="d-flex justify-content-center">
-        <button type="submit" class="btn btn-primary">Register</button>
-      </div>
-      <div class="mt-3 text-center">
-        <span class="text-muted">Already have an account?</span>
-        <a href="{{path('app_login')}}">Sign in</a>
-      </div>
-    </form>
+      <form method="post" class="mb-3">
+      <h1 class="h4 mb-3 fw-normal">{{ 'register.title'|trans }}</h1>
+      {{ form_row(registrationForm.firstname) }}
+      {{ form_row(registrationForm.lastname) }}
+      {{ form_row(registrationForm.email) }}
+      {{ form_row(registrationForm.plainPassword) }}
+      {{ form_row(registrationForm.agreeTerms) }}
+        <div class="d-flex justify-content-center">
+          <button type="submit" class="btn btn-primary w-100 py-2">{{ 'register.register'|trans }}</button>
+        </div>
+        <div class="mt-3 text-center">
+          <span class="text-muted">{{ 'register.already_have_account'|trans }}</span>
+          <a href="{{path('app_login')}}">{{ 'register.sign_in'|trans }}</a>
+        </div>
+        {{ form_row(registrationForm._token) }}
+      </form>
 {% endblock %}

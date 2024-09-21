@@ -9,11 +9,15 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     unzip \
     vim \
+    libfreetype6-dev \
+    libjpeg-dev \
+    libwebp-dev \
+    libpng-dev \
+    libxml2-dev \
     && docker-php-ext-install pdo pdo_mysql zip \
     && docker-php-ext-configure intl \
-    && docker-php-ext-install intl \
-    && apt-get install -y libfreetype6-dev libjpeg-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install intl mbstring xml \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install gd \
     && a2enmod rewrite \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
