@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %} {% block title %}{{ title }}{% endblock %} 
+{% block nav %}
+{% include "admin/admin_nav.html.twig" %}
+{% endblock %}
+{% block body %}
+  <div class="d-flex flex-column h-100 w-100 justify-content-center align-items-center">
+    <table class="table table-sm table-striped mt-5 border shadow">
+      <thead>
+        <tr>
+          <th scope="col">Files</th>
+        </tr>
+      </thead>
+      <tbody>  
+        {% for file in files %}
+        <tr>
+            <td><img src="{{ file.url }}" alt="{{ file.key }}" class="img-thumbnail img-fluid" style="max-height: 120px;"></td>
+            <td>{{ file.key }}</td> <!-- Hier den Key oder eine andere Eigenschaft verwenden -->
+            <td>
+              <a href="{{ path('app_admin_files_download', { 'key': file.key }) }}" class="btn btn-primary">Herunterladen</a>
+            </td>
+            <td>
+              <a href="{{ path('app_admin_files_delete', { 'key': file.key }) }}" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="2">Keine Dateien gefunden.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

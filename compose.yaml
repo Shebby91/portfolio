@@ -9,6 +9,7 @@ services:
       - APP_ENV=${APP_ENV}
       - APP_DEBUG=${APP_DEBUG}
       - DATABASE_URL=${DATABASE_URL}
+      - AWS_ENDPOINT=${AWS_ENDPOINT}
     networks:
       - backend
     ports:
@@ -17,6 +18,7 @@ services:
       - db_prod
       - db_test
       - mailer
+      - localstack
 
   db_prod:
     image: mariadb:latest
@@ -61,6 +63,20 @@ services:
     image: portfolio-app
     command: ["php", "bin/console", "messenger:consume", "async"]
     restart: always
+    networks:
+      - backend
+
+  localstack:
+    image: localstack/localstack:latest
+    environment:
+      - SERVICES=s3
+      - AWS_DEFAULT_REGION=us-east-1
+      - DEBUG=1
+    ports:
+      - "4566:4566"  # LocalStack Gateway für alle Dienste
+      - "4572:4572"  # S3
+    volumes:
+      - "./localstack:/var/lib/localstack"
     networks:
       - backend
 

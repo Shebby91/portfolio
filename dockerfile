@@ -14,6 +14,8 @@ RUN apt-get update && apt-get install -y \
     libwebp-dev \
     libpng-dev \
     libxml2-dev \
+    python3-pip \
+    && pip3 install s3cmd \
     && docker-php-ext-install pdo pdo_mysql zip \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl mbstring xml \

@@ -4,6 +4,13 @@
 {% endblock %}
 {% block body %}
   <div class="d-flex flex-column h-100 w-100 justify-content-center align-items-center">
+    <h1>Bild hochladen</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn">Hochladen</button>
+    {{ form_end(form) }}
+
     <table class="table table-sm table-striped mt-5 border shadow">
       <thead>
         <tr>

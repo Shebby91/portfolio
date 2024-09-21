@@ -3,8 +3,9 @@
         <h3 class="float-md-start mb-0">{{ title }}</h3>
         <nav class="nav nav-masthead justify-content-center float-md-end">
             <a class="nav-link fw-bold py-1 px-0 text-light" aria-current="page" href="{{ path('app_admin') }}">Home</a>
+            <a class="nav-link fw-bold py-1 px-0 text-light" href="{{ path('app_admin_files') }}">Files</a>
             <a class="nav-link fw-bold py-1 px-0 text-light" href="{{ path('app_healthcheck') }}">Healthcheck</a>
-            <a class="nav-link fw-bold py-1 px-0 text-light" href="{{ path('app_user') }}">User Area</a>
+            {#<a class="nav-link fw-bold py-1 px-0 text-light" href="{{ path('app_user') }}">User Area</a>#}
             <a class="nav-link fw-bold py-1 px-0 text-danger" href="{{ path('app_logout') }}">Logout</a>
         </nav>
     </div>
