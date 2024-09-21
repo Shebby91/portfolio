@@ -22,21 +22,21 @@
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
         {% block nav %}
         {% endblock %}
+        {% for flash in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show mt-3 text-break" role="alert">
+            {{ flash }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% for flash in app.flashes('error') %}
+        <div class="alert alert-danger alert-dismissible fade show mt-3 text-break" role="alert">
+            {{ flash }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
         <main class="px-0">
             {% block body %}
             {% endblock %}
-            {% for flash in app.flashes('success') %}
-            <div class="alert alert-success alert-dismissible fade show mt-3 text-break" role="alert">
-                {{ flash }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endfor %}
-            {% for flash in app.flashes('error') %}
-            <div class="alert alert-danger alert-dismissible fade show mt-3 text-break" role="alert">
-                {{ flash }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endfor %}
         </main>
         {% block footer %}
                 {% include "base_footer.html.twig" %}

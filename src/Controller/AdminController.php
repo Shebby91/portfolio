@@ -15,13 +15,30 @@ use Symfony\Component\Routing\Attribute\Route;
 class AdminController extends AbstractController
 {
     #[Route('/admin', name: 'app_admin')]
-    public function admin(Request $request, UserRepository $userRepository, AwsS3Service $s3): Response
+    public function admin(UserRepository $userRepository): Response
     {
         
         $this->getUser();
 
+        $users = $userRepository->findAll();
+
+        return $this->render('admin/admin.html.twig', [
+            'title' => 'Admin',
+            'users' => $users,
+
+        ]);
+    }
+
+    #[Route('/admin/files', name: 'app_admin_files')]
+    public function adminFiles(Request $request, UserRepository $userRepository, AwsS3Service $s3): Response
+    {
+        $this->getUser();
+
         $bucketName = 'my-bucket';
-        $result = $s3->checkOrCreateBucket($bucketName);
+
+        $s3->checkOrCreateBucket($bucketName);
+
+        $files = $s3->listFiles($bucketName);
         
         $form = $this->createForm(ImageUploadFormType::class);
 
@@ -36,34 +53,16 @@ class AdminController extends AbstractController
                 $file->move('/tmp', $fileName);
         
                 // Lade die Datei in den S3 Bucket hoch
-                $bucketName = 'my-bucket'; // Der Name deines Buckets
                 $s3->uploadFile($bucketName, $fileName, '/tmp/' . $fileName); // Übergebe den Bucket-Namen, den Key und den Dateipfad
-        
-                return $this->redirectToRoute('app_admin');
+                $this->addFlash('success', "Datei '$fileName' wurde erfolgreich hochgeladen.");
+                return $this->redirectToRoute('app_admin_files');
             }
         }
 
-        $users = $userRepository->findAll();
-
-        return $this->render('admin/admin.html.twig', [
-            'title' => 'Admin',
-            'users' => $users,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    #[Route('/admin/files', name: 'app_admin_files')]
-    public function adminFiles(Request $request, UserRepository $userRepository, AwsS3Service $s3): Response
-    {
-        
-        $this->getUser();
-
-        $bucketName = 'my-bucket'; // Der Name deines Buckets
-        $files = $s3->listFiles($bucketName);
-        //dd($files);
         return $this->render('admin/admin_files.html.twig', [
             'files' => $files,
-            'title' => 'Files'
+            'title' => 'Files',
+            'form' => $form->createView(),
         ]);
     }
 
@@ -99,10 +98,7 @@ class AdminController extends AbstractController
             $this->addFlash('error', "Fehler beim Löschen der Datei: " . $deleteResult);
         }
     
-        return $this->render('admin/admin_files.html.twig', [
-            'files' => $s3->listFiles($bucketName),
-            'title' => 'Files'
-        ]);
+        return $this->redirectToRoute('app_admin_files');
     }
 
     #[Route('/test-email-test')]

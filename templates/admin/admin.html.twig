@@ -4,14 +4,9 @@
 {% endblock %}
 {% block body %}
   <div class="d-flex flex-column h-100 w-100 justify-content-center align-items-center">
-    <h1>Bild hochladen</h1>
-
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button type="submit" class="btn">Hochladen</button>
-    {{ form_end(form) }}
-
-    <table class="table table-sm table-striped mt-5 border shadow">
+    <h1 class="h4 mb-3 fw-normal w-100 d-flex justify-content-start"><span>Users</span></h1>
+    <div class="table-responsive w-100">
+      <table class="table table-sm table-striped align-middle border shadow">
       <thead>
         <tr>
           <th scope="col">Email</th>
@@ -42,4 +37,5 @@
       </tbody>
     </table>
   </div>
+</div>
 {% endblock %}
