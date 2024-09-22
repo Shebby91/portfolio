@@ -2,34 +2,41 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
+use App\Service\HealthcheckService;
 use App\Repository\UserRepository;
 use App\Service\AwsS3Service;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Form\ImageUploadFormType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+
 class AdminController extends AbstractController
 {
     #[Route('/admin', name: 'app_admin')]
     public function admin(UserRepository $userRepository): Response
     {
-        
-        $this->getUser();
-
         $users = $userRepository->findAll();
-
         return $this->render('admin/admin.html.twig', [
-            'title' => 'Admin',
+            'title' => 'User',
             'users' => $users,
         ]);
     }
 
+    #[Route('/admin/healthcheck', name: 'app_admin_healthcheck')]
+    public function healthcheck(HealthcheckService $checkHealth): Response
+    {
+
+        return $this->render('admin/admin_healthcheck.html.twig', [
+            'title' => 'Healthcheck',
+            'connection' => $checkHealth->checkDatabaseConnection(),
+            's3Status' => $checkHealth->checkS3Connection(),
+        ]);
+    }
+
     #[Route('/admin/files', name: 'app_admin_files')]
-    public function adminFiles(Request $request, UserRepository $userRepository, AwsS3Service $s3): Response
+    public function adminFiles(Request $request, AwsS3Service $s3): Response
     {
         $this->getUser();
 
@@ -66,9 +73,8 @@ class AdminController extends AbstractController
     }
 
     #[Route('/admin/files/download/{key}', name: 'app_admin_files_download')]
-    public function adminFilesDownload(Request $request, UserRepository $userRepository, AwsS3Service $s3, String $key): Response
+    public function adminFilesDownload(AwsS3Service $s3, String $key): Response
     {
-        
         $this->getUser();
         $bucketName = 'my-bucket'; // Ersetze dies durch deinen Bucket-Namen
         $savePath = '/tmp/' . $key; // Temporärer Speicherort für die Datei
@@ -83,7 +89,7 @@ class AdminController extends AbstractController
     }
 
     #[Route('/admin/files/delete/{key}', name: 'app_admin_files_delete')]
-    public function adminFilesDelete(Request $request, UserRepository $userRepository, AwsS3Service $s3, String $key): Response
+    public function adminFilesDelete(AwsS3Service $s3, String $key): Response
     {
         
         $this->getUser();
@@ -98,13 +104,5 @@ class AdminController extends AbstractController
         }
     
         return $this->redirectToRoute('app_admin_files');
-    }
-
-    #[Route('/test-email-test')]
-    public function testEmail(): Response
-    {
-        $this->getUser();
-
-        return $this->render('email/base_mail.html.twig', ['user' => $this->getUser()]);
     }
 }

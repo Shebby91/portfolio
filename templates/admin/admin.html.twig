@@ -1,41 +1,41 @@
-{% extends 'base.html.twig' %} {% block title %}{{ title }}{% endblock %} 
+{% extends 'base_admin.html.twig' %} {% block title %}{{ title }}{% endblock %} 
 {% block nav %}
 {% include "admin/admin_nav.html.twig" %}
 {% endblock %}
+{% block sidebar %}
+{% include "admin/admin_sidebar.html.twig" %}
+{% endblock %}
 {% block body %}
-  <div class="d-flex flex-column h-100 w-100 justify-content-center align-items-center">
-    <h1 class="h4 mb-3 fw-normal w-100 d-flex justify-content-start"><span>Users</span></h1>
-    <div class="table-responsive w-100">
-      <table class="table table-sm table-striped align-middle border shadow">
-      <thead>
-        <tr>
-          <th scope="col">Email</th>
-          <th scope="col">Auth1</th>
-          <th scope="col">Auth2</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for user in users %}
-        <tr>
-          <td>{{ user.email }}</td>
-          <td class="text-center">
-            {% if user.isVerified %}
-              <span class="badge text-bg-success text-success">1</span>
-            {% else %}
-              <span class="badge text-bg-danger text-danger">0</span>
-            {% endif %}
-          </td>
-          <td class="text-center">
-            {% if user.isTwoFactorEnabled %}
-            <span class="badge text-bg-success text-success">1</span>
-          {% else %}
-            <span class="badge text-bg-danger text-danger">0</span>
-          {% endif %}
-        </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+<div class="table-responsive w-100">
+  <table class="table table-sm table-striped align-middle border shadow">
+  <thead>
+    <tr>
+      <th scope="col">Email</th>
+      <th class="text-center" scope="col">Auth1</th>
+      <th class="text-center" scope="col">Auth2</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+    <tr>
+      <td>{{ user.email }}</td>
+      <td class="text-center">
+        {% if user.isVerified %}
+          <span class="badge text-bg-success text-success">1</span>
+        {% else %}
+          <span class="badge text-bg-danger text-danger">0</span>
+        {% endif %}
+      </td>
+      <td class="text-center">
+        {% if user.isTwoFactorEnabled %}
+        <span class="badge text-bg-success text-success">1</span>
+      {% else %}
+        <span class="badge text-bg-danger text-danger">0</span>
+      {% endif %}
+    </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 </div>
 {% endblock %}

@@ -1,10 +1,11 @@
-{% extends 'base.html.twig' %} {% block title %}{{ title }}{% endblock %} 
+{% extends 'base_admin.html.twig' %} {% block title %}{{ title }}{% endblock %} 
 {% block nav %}
 {% include "admin/admin_nav.html.twig" %}
 {% endblock %}
+{% block sidebar %}
+{% include "admin/admin_sidebar.html.twig" %}
+{% endblock %}
 {% block body %}
-  <div class="d-flex flex-column h-100 w-100 justify-content-center align-items-center">
-    <h1 class="h4 mb-3 fw-normal w-100 d-flex justify-content-start"><span>Uploaded Files</span></h1>
     <div class="table-responsive w-100">
       <table class="table table-sm table-striped align-middle border shadow">
         <thead>
@@ -35,12 +36,10 @@
         </tbody>
       </table>
     </div>
-    <div class="mt-5"> 
+    <div class="mt-2"> 
       {{ form_start(form) }}
       {{ form_widget(form) }}
       <button type="submit" class="btn btn-primary">Hochladen</button>
     {{ form_end(form) }}
     </div>
-
-  </div>
 {% endblock %}

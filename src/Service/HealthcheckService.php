@@ -1,40 +1,28 @@
 <?php
 
-namespace App\Controller;
+namespace App\Service;
 
 use App\Service\AwsS3Service;
 use Doctrine\DBAL\Exception\ConnectionException;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
-class HealthcheckController extends AbstractController
+class HealthcheckService
 {
     private AwsS3Service $awsS3Service;
+    private EntityManagerInterface $entityManager;
 
-    public function __construct(AwsS3Service $awsS3Service)
+    public function __construct(AwsS3Service $awsS3Service, EntityManagerInterface $entityManager)
     {
         $this->awsS3Service = $awsS3Service;
+        $this->entityManager = $entityManager;
     }
 
-    #[Route('/healthcheck', name: 'app_healthcheck')]
-    public function healthcheck(EntityManagerInterface $entityManager): Response
-    {
-        $dbConnection = $this->checkDatabaseConnection($entityManager);
-        $s3Status = $this->checkS3Connection();
-  
-        return $this->render('healthcheck/healthcheck.html.twig', [
-            'title' => 'Healthcheck',
-            'connection' => $dbConnection,
-            's3Status' => $s3Status,
-        ]);
-    }
 
-    private function checkDatabaseConnection(EntityManagerInterface $entityManager): array
+
+    public function checkDatabaseConnection(): array
     {
         try {
-            $connection = $entityManager->getConnection();
+            $connection = $this->entityManager->getConnection();
             $connection->executeQuery('SELECT 1');
             return ['status' => true, 'message' => 'Verbindung zur Datenbank erfolgreich hergestellt!'];
         } catch (ConnectionException $e) {
@@ -44,7 +32,7 @@ class HealthcheckController extends AbstractController
         }
     }
 
-    private function checkS3Connection(): array
+    public function checkS3Connection(): array
     {
         try {
             $buckets = $this->awsS3Service->listBuckets();

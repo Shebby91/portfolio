@@ -1,0 +1,49 @@
+{% extends 'base_admin.html.twig' %} {% block title %}{{ title }}{% endblock %} 
+{% block nav %}
+{% include "admin/admin_nav.html.twig" %}
+{% endblock %}
+{% block sidebar %}
+{% include "admin/admin_sidebar.html.twig" %}
+{% endblock %}
+{% block body %}
+<div class="table-responsive w-100">
+    <table class="table table-sm table-striped border shadow mt-0">
+        <thead>
+            <thead>
+              <tr>
+                <th scope="col">Connection</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-left">
+                  Verbindung zur Datenbank
+              </td>
+                <td>
+                  {% if connection %}
+                  <span class="badge text-bg-success text-success">1</span>
+                 {% endif %}
+                 {% if error is defined %}
+                  <span class="badge text-bg-danger text-danger">0</span>
+                  {{ error }}
+                {% endif %}
+              </td>
+              </tr>
+              <tr>
+                <td class="text-left">
+                  {{ s3Status.message }}
+              </td>
+                <td>
+                  {% if s3Status.status == true %}
+                  <span class="badge text-bg-success text-success">1</span>
+                  {% else %}
+                  <span class="badge text-bg-danger text-danger">0</span>
+                  {{ error }}
+                {% endif %}
+              </td>
+              </tr>
+            </tbody>
+          </table>
+</div>
+{% endblock %}
