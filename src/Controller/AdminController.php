@@ -17,28 +17,32 @@ class AdminController extends AbstractController
     #[Route('/admin', name: 'app_admin')]
     public function admin(UserRepository $userRepository): Response
     {
+        $user = $this->getUser();
+        
         $users = $userRepository->findAll();
         return $this->render('admin/admin.html.twig', [
             'title' => 'User',
             'users' => $users,
+            'user' => $user
         ]);
     }
 
     #[Route('/admin/healthcheck', name: 'app_admin_healthcheck')]
     public function healthcheck(HealthcheckService $checkHealth): Response
     {
-
+        $user = $this->getUser();
         return $this->render('admin/admin_healthcheck.html.twig', [
             'title' => 'Healthcheck',
             'connection' => $checkHealth->checkDatabaseConnection(),
             's3Status' => $checkHealth->checkS3Connection(),
+            'user' => $user
         ]);
     }
 
     #[Route('/admin/files', name: 'app_admin_files')]
     public function adminFiles(Request $request, AwsS3Service $s3): Response
     {
-        $this->getUser();
+        $user = $this->getUser();
 
         $bucketName = 'my-bucket';
 
@@ -69,6 +73,7 @@ class AdminController extends AbstractController
             'files' => $files,
             'title' => 'Files',
             'form' => $form->createView(),
+            'user' => $user
         ]);
     }
 

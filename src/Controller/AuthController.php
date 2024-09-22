@@ -47,6 +47,7 @@ class AuthController extends BaseController
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, VerifyEmailHelperInterface $verifyEmailHelper, Mailerservice $mailer, TranslatorInterface $translator): Response
     {
         $user = new User();
+        $user->setRegisteredSince(new \DateTime());
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
         

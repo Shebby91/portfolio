@@ -20,15 +20,13 @@
         </li>
       </ul>
       <div>
-        <hr class="mt-3 mb-0">
-        <ul class="nav flex-column mt-auto">
-          <li class="nav-item py-0 py-md-3">
-            <a class="nav-link d-flex align-items-center gap-2" href="{{path('app_logout')}}">
-              Sign out
-            </a>
-          </li>
-        </ul>
-      </div>
+      <hr class="mt-3 mb-0">
+      <ul class="nav">
+        <li class="nav-item">
+          <span class="text-muted nav-link d-flex align-items-center gap-2">version-{{ app_env }}-{{ app_version }}</span>
+        </li>
+      </ul>
     </div>
+  </div>
   </div>
 </div>

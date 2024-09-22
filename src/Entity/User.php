@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -47,6 +48,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     private ?string $googleAuthenticatorSecret;
 
     private $plainPassword;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $registeredSince = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $profileImgUrl = null;
 
     public function getId(): ?int
     {
@@ -198,5 +205,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setGoogleAuthenticatorSecret(?string $googleAuthenticatorSecret): void
     {
         $this->googleAuthenticatorSecret = $googleAuthenticatorSecret;
+    }
+
+    public function getRegisteredSince(): ?\DateTimeInterface
+    {
+        return $this->registeredSince;
+    }
+
+    public function setRegisteredSince(\DateTimeInterface $registeredSince): static
+    {
+        $this->registeredSince = $registeredSince;
+
+        return $this;
+    }
+
+    public function getProfileImgUrl(): ?string
+    {
+        return $this->profileImgUrl;
+    }
+
+    public function setProfileImgUrl(?string $profileImgUrl): static
+    {
+        $this->profileImgUrl = $profileImgUrl;
+
+        return $this;
     }
 }
