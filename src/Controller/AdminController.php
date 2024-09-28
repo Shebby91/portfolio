@@ -31,7 +31,7 @@ class AdminController extends AbstractController
             // Define the page parameter
             $request->query->getInt('page', 1),
             // Items per page
-            10
+            20
         );
 
         return $this->render('admin/admin.html.twig', [
@@ -71,12 +71,10 @@ class AdminController extends AbstractController
             // Define the page parameter
             $request->query->getInt('page', 1),
             // Items per page
-            6
+            7
         );
 
-
         $form = $this->createForm(ImageUploadFormType::class);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
