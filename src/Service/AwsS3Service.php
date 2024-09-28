@@ -77,16 +77,18 @@ class AwsS3Service
         
     
         try {
-            $this->s3Client->putObject([
+            /** @var \AWS\Result $result */
+            $result = $this->s3Client->putObject([
                 'Bucket' => $bucketName,
                 'Key'    => $key,
                 'SourceFile' => $filePath,
             ]);
-    
-            return "Datei erfolgreich hochgeladen: $key";
+
+            return  $result['ObjectURL'];
         } catch (AwsException $e) {
             return $e->getMessage();
         }
+        
     }
 
     public function downloadFile(string $bucketName, string $key, string $savePath)
@@ -117,6 +119,7 @@ class AwsS3Service
                     $files[] = [
                         'key' => $object['Key'],
                         'url' => $this->s3Client->getObjectUrl($bucketName, $object['Key']),
+                        'lastModified' => $object['LastModified'],
                     ];
                 }
             }

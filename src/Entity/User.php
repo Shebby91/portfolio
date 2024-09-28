@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -52,8 +54,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $registeredSince = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $profileImgUrl = null;
+    /**
+     * @var Collection<int, File>
+     */
+    #[ORM\OneToMany(targetEntity: File::class, mappedBy: 'user')]
+    private Collection $files;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?file $profile_img = null;
+
+    public function __construct()
+    {
+        $this->files = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -219,14 +232,44 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this;
     }
 
-    public function getProfileImgUrl(): ?string
+    /**
+     * @return Collection<int, File>
+     */
+    public function getFiles(): Collection
     {
-        return $this->profileImgUrl;
+        return $this->files;
     }
 
-    public function setProfileImgUrl(?string $profileImgUrl): static
+    public function addFile(File $file): static
     {
-        $this->profileImgUrl = $profileImgUrl;
+        if (!$this->files->contains($file)) {
+            $this->files->add($file);
+            $file->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFile(File $file): static
+    {
+        if ($this->files->removeElement($file)) {
+            // set the owning side to null (unless already changed)
+            if ($file->getUser() === $this) {
+                $file->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getProfileImg(): ?file
+    {
+        return $this->profile_img;
+    }
+
+    public function setProfileImg(?file $profile_img): static
+    {
+        $this->profile_img = $profile_img;
 
         return $this;
     }

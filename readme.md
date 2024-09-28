@@ -18,6 +18,8 @@ sudo docker-compose down
 
 'Important Commands'
 
+sudo chown -R $(whoami):$(whoami) var/cache var/logs
+
 #php bin/console make:migration
 
 #php bin/console make:entity

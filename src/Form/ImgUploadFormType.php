@@ -34,6 +34,8 @@ class ImageUploadFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => null,
+            'attr' => ['id' => 'img-upload-form',
+                        'class' => 'w-100']
         ]);
     }
 }

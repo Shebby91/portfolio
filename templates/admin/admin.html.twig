@@ -6,36 +6,49 @@
 {% include "admin/admin_sidebar.html.twig" %}
 {% endblock %}
 {% block body %}
-<div class="table-responsive w-100">
-  <table class="table table-sm table-striped align-middle border shadow">
-  <thead>
-    <tr>
-      <th scope="col">Email</th>
-      <th class="text-center" scope="col">Auth1</th>
-      <th class="text-center" scope="col">Auth2</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for user in users %}
-    <tr>
-      <td>{{ user.email }}</td>
-      <td class="text-center">
-        {% if user.isVerified %}
-          <span class="badge text-bg-success text-success">1</span>
-        {% else %}
-          <span class="badge text-bg-danger text-danger">0</span>
-        {% endif %}
+<div class="w-100 h-100 d-flex flex-column justify-content-between">
+  <div class="table-responsive w-100">
+    <table class="table table-sm table-striped align-middle border shadow">
+    <thead>
+      <tr>
+        <th scope="col">Email</th>
+        <th scope="col">Firstname</th>
+        <th scope="col">Lastname</th>
+        <th scope="col">Registerd</th>
+        <th class="text-center" scope="col">Auth1</th>
+        <th class="text-center" scope="col">Auth2</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.email }}</td>
+        <td>{{ user.firstName }}</td>
+        <td>{{ user.lastName }}</td>
+        <td>{{ user.registeredSince|date("d.m.Y")}}</td>
+        <td class="text-center">
+          {% if user.isVerified %}
+            {% include 'components/switch.html.twig' with {'class': 'text-bg-success text-success', 'checked': 'checked', 'disabled': '' } only %}
+          {% else %}
+              {% include 'components/switch.html.twig' with {'class': 'text-bg-danger text-danger', 'checked': '', 'disabled': 'disabled' } only %}
+          {% endif %}
+        </td>
+        <td class="text-center">
+          {% if user.isTwoFactorEnabled %}
+            {% include 'components/switch.html.twig' with {'class': 'text-bg-success text-success', 'checked': 'checked', 'disabled': '' } only %}
+          {% else %}
+            {% include 'components/switch.html.twig' with {'class': 'text-bg-danger text-danger', 'checked': '', 'disabled': 'disabled' } only %}
+          {% endif %}
       </td>
-      <td class="text-center">
-        {% if user.isTwoFactorEnabled %}
-        <span class="badge text-bg-success text-success">1</span>
-      {% else %}
-        <span class="badge text-bg-danger text-danger">0</span>
-      {% endif %}
-    </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <div class="row">
+    <div class="col-12 d-flex justify-content-center">
+      {{ knp_pagination_render(users) }}
+    </div>
+  </div>
 </div>
 {% endblock %}

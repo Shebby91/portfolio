@@ -1,4 +1,4 @@
-{% extends 'base_admin.html.twig' %} {% block title %}{{ title }}{% endblock %} 
+{% extends 'base_admin.html.twig' %} {% block title %}{{ title }}{% endblock %}
 {% block nav %}
 {% include "admin/admin_nav.html.twig" %}
 {% endblock %}
@@ -6,40 +6,60 @@
 {% include "admin/admin_sidebar.html.twig" %}
 {% endblock %}
 {% block body %}
-    <div class="table-responsive w-100">
-      <table class="table table-sm table-striped align-middle border shadow">
-        <thead>
-          <tr>
-            <th scope="col">Thumbnail</th>
-            <th scope="col">Filename</th>
-            <th scope="col">Delete</th>
-            <th scope="col">Download</th>
-          </tr>
-        </thead>
-        <tbody>  
-          {% for file in files %}
-          <tr>
-              <td><img src="{{ file.url }}" alt="{{ file.key }}" class="img-thumbnail img-fluid m-2" style="max-height: 60px;"></td>
-              <td>{{ file.key }}</td>
-              <td>
-                <a href="{{ path('app_admin_files_delete', { 'key': file.key }) }}" class="btn btn-danger">Delete</a>
-              </td>
-              <td>
-                <a href="{{ path('app_admin_files_download', { 'key': file.key }) }}" class="btn btn-primary">Herunterladen</a>
-              </td>
-          </tr>
-          {% else %}
-          <tr>
-              <td colspan="4">Keine Dateien gefunden.</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <div class="mt-2"> 
-      {{ form_start(form) }}
-      {{ form_widget(form) }}
-      <button type="submit" class="btn btn-primary">Hochladen</button>
+<div class="w-100 h-100 d-flex flex-column justify-content-between">
+  <div>
+  <div class="mb-2 d-flex w-100 justify-content-between align-items-end">
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
     {{ form_end(form) }}
+    <div class="ms-3 mb-3">
+      <button type="submit" form="img-upload-form" class="btn btn-primary">Hochladen</button>
     </div>
+
+  </div>
+  <div class="table-responsive w-100">
+    <table class="table table-sm table-striped align-middle border shadow">
+      <thead>
+        <tr>
+          <th scope="col">Thumbnail</th>
+          <th scope="col" class="d-none d-lg-table-cell">Uploaded by</th>
+          <th scope="col" class="d-none d-lg-table-cell">Filename</th>
+          <th scope="col" class="d-none d-sm-table-cell">Last modified</th>
+          <th scope="col">Delete</th>
+          <th scope="col">Download</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for file in files %}
+        <tr>
+          <td><img src="{{ file.filePath }}" alt="{{ file.fileName }}" class="img-thumbnail img-fluid m-2"
+              style="max-height: 60px;"></td>
+          <td class="d-none d-lg-table-cell">{{ file.fileName }}</td>
+          <td class="d-none d-lg-table-cell">{{ file.user.email }}</td>
+          <td class="d-none d-sm-table-cell">
+            {{ file.lastModified|date("d.m.Y") }}
+          </td>
+          <td>
+            <a href="{{ path('app_admin_files_delete', { 'id': file.id }) }}" class="btn btn-danger">Delete</a>
+          </td>
+          <td>
+            <a href="{{ path('app_admin_files_download', { 'key': file.fileName }) }}"
+              class="btn btn-primary">Herunterladen</a>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="4">Keine Dateien gefunden.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+  <div class="row">
+    <div class="col-12 d-flex justify-content-center">
+      {{ knp_pagination_render(files) }}
+    </div>
+  </div>
+</div>
 {% endblock %}

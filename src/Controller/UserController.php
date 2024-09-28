@@ -12,11 +12,12 @@ class UserController extends AbstractController
     #[Route('/user', name: 'app_user')]
     public function user(): Response
     {
-        
+        $user = $this->getUser();
         
         
         return $this->render('user/user.html.twig', [
             'title' => 'User',
+            'user' => $user
         ]);
     }
 }

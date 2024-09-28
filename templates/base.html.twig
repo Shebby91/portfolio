@@ -19,7 +19,8 @@
 </head>
 
 <body class="d-flex h-100 text-bg-dark">
-    <div class="container d-flex w-100 h-100 p-3 mx-auto flex-column">
+
+    <div class="container-fluid px-0 d-flex w-100 h-100 mx-auto flex-column">
         {% block nav %}
         {% endblock %}
         {% for flash in app.flashes('success') %}
