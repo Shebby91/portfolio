@@ -165,6 +165,14 @@ body {
   transform: scale(1.025); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
 }
 
+.offcanvas.show:not(.hiding), .offcanvas.showing {
+  opacity: 97%;
+}
+
+.dropdown-menu[data-bs-popper] {
+  left: 8px!important;
+}
+
 /* RESPONSIVE CSS
 -------------------------------------------------- */
 

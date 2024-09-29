@@ -1,14 +1,10 @@
 {% extends 'base.html.twig' %} {% block title %}{{ title }}{% endblock %} 
-{% block nav %}
-{% include "user/user_nav.html.twig" %}
-{% endblock %}
 {% block body %}
-
 <div class="container marketing mt-5">
   <div class="row featurette">
     <div class="col-md-2 "> 
       <img {% if user.profileImg is not null %}src="{{user.profileImg.filePath}}" {% else
-        %}src="https://github.com/mdo.png" {% endif %} class="img-fluid rounded shadow zoom rounded-circle" width="150" height="150" alt="66f7f4a91f664.jpg">
+        %}src="https://github.com/mdo.png" {% endif %} class="rounded shadow zoom rounded-circle" width="150" height="150" alt="66f7f4a91f664.jpg">
   </div>
     <div class="col-md-10 d-flex align-items-end">
       <div class="mb-2 d-flex w-100 justify-content-between align-items-end">

@@ -28,6 +28,18 @@ class UserController extends AbstractController
         ]);
     }
 
+    #[Route('/user/album', name: 'app_user_album')]
+    public function userAlbum(): Response
+    {
+        $user = $this->getUser();
+        
+        
+        return $this->render('user/user_album.html.twig', [
+            'title' => 'Album',
+            'user' => $user
+        ]);
+    }
+
     #[Route('/user/profile', name: 'app_user_profile')]
     public function userProfile(Request $request, AwsS3Service $s3, PaginatorInterface $paginator, EntityManagerInterface $entityManager, FileRepository $fileRepository): Response
     {

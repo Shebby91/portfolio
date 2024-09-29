@@ -1,48 +1,38 @@
 <!DOCTYPE html>
 <html lang="en" class="h-100" data-bs-theme="dark">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Welcome!{% endblock %}</title>
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-
-    {% block stylesheets %}
-    {% endblock %}
-
-    {% block javascripts %}
-    {% block importmap %}
-    {{ importmap('app') }}
-    {% endblock %}
-    {% endblock %}
-</head>
-
-<body class="d-flex h-100 text-bg-dark">
-
-    <div class="container-fluid px-0 d-flex w-100 h-100 mx-auto flex-column">
-        {% block nav %}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        {% block stylesheets %}
         {% endblock %}
-        {#{% for flash in app.flashes('success') %}
-        <div class="alert alert-success alert-dismissible fade show mt-3 text-break" role="alert">
-            {{ flash }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endfor %}
-        {% for flash in app.flashes('error') %}
-        <div class="alert alert-danger alert-dismissible fade show mt-3 text-break" role="alert">
-            {{ flash }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endfor %} #}
-        <main class="px-0">
+
+        {% block javascripts %}
+            {% block importmap %}
+            {{ importmap('app') }}
+            {% endblock %}
+        {% endblock %}
+    </head>
+    <body class="d-flex flex-column h-100 text-bg-dark">
+        <header class="d-flex w-100 justify-content-center px-1 sticky-top border-bottom shadow-lg bg-body-tertiary">
+            {% block nav %}
+            {% include "user/user_nav.html.twig" %}
+            {% endblock %}
+        </header>
+
+        <main class="mb-5">
             {% block body %}
             {% endblock %}
         </main>
-        {% block footer %}
-                {% include "base_footer.html.twig" %}
-        {% endblock %}
-    </div>
-</body>
 
+        <footer class="pb-3 pt-0 mt-auto shadow-lg bg-body-tertiaryr">
+        {% block footer %}
+            {% include "base_footer.html.twig" %}
+        {% endblock %}
+        </footer>
+        {% block javascripts_bottom_body %}
+
+        {% endblock %}
+    </body>
 </html>
