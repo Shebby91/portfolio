@@ -1,21 +1,19 @@
-{% extends 'base.html.twig' %} {% block title %}{{ title }}{% endblock %} 
+{% extends 'base.html.twig' %} {% block title %}{{ title }}{% endblock %}
 {% block body %}
-<div class="container marketing mt-5">
-  <div class="row featurette">
-    <div class="col-md-2 "> 
-      <img {% if user.profileImg is not null %}src="{{user.profileImg.filePath}}" {% else
-        %}src="https://github.com/mdo.png" {% endif %} class="rounded shadow zoom rounded-circle" width="150" height="150" alt="66f7f4a91f664.jpg">
-  </div>
-    <div class="col-md-10 d-flex align-items-end">
-      <div class="mb-2 d-flex w-100 justify-content-between align-items-end">
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-        {{ form_end(form) }}
-        <div class="ms-3 mb-3">
-          <button type="submit" form="img-upload-form" class="btn btn-primary">Hochladen</button>
-        </div>
+<div class="container mt-5">
+<h1 class="h4 mb-3 fw-normal w-100 text-center">Edit</h1>
+  <div class="row justify-content-center">
+    <div class="col-11 col-sm-11 col-md-6 col-lg-4 col-xl-3 d-flex flex-column justify-content-center align-items-center bg-body-tertiary pt-5 shadow-lg rounded">
+        <img id="profile-img" data-controller="img" {% if user.profileImg is not null %}src="{{user.profileImg.filePath}}" {% else
+          %}src="{{ asset('images/default_profile.jpg') }}" {% endif %} class="rounded shadow zoom rounded-circle"
+          width="150" height="150" alt="66f7f4a91f664.jpg">
+        <div id="form-overlap">
+          {{ form_start(form) }}
+          <span id="add-profile-image-icon" class="material-symbols-outlined">add</span>
+          {{ form_widget(form) }}
+          {{ form_end(form) }}
       </div>
     </div>
   </div>
-</div><!-- /.container -->
+</div>
 {% endblock %}

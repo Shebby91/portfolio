@@ -1,4 +1,4 @@
-<nav class="navbar container navbar-expand-md bg-body-tertiary w-100 sticky-top mx-5 py-3 px-3" data-bs-theme="dark">
+<nav class="navbar container navbar-expand-md bg-body-tertiary w-100 sticky-top mx-0 mx-md-5 py-2 px-3 px-sm-4 px-md-3" data-bs-theme="dark">
       <a class="navbar-brand" href="{{path('app_user')}}">
         <h5 class="offcanvas-title">Portfolio</h5>
       </a>
@@ -16,12 +16,12 @@
               <li class="nav-item"><a class="nav-link" href="{{path('app_user')}}">Start</a></li>
               <li class="nav-item"><a class="nav-link" href="{{path('app_user_album')}}">Album</a></li>
             </ul>
-            <li class="nav-item">
+            <li class="nav-item d-flex align-items-center">
               <div class="dropdown pt-3 pt-md-0 d-flex flex-column-reverse d-md-block">
                     <a href="#" class="d-flex align-items-center link-body-emphasis text-decoration-none dropdown-toggle"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <img {% if user.profileImg is not null %}src="{{user.profileImg.filePath}}" {% else
-                            %}src="https://github.com/mdo.png" {% endif %} alt="" width="32" height="32"
+                            %}src="{{ asset('images/default_profile.jpg') }}" {% endif %} alt="" width="32" height="32"
                             class="rounded-circle me-2">
                         <strong>{{user.email}}</strong>
                     </a>

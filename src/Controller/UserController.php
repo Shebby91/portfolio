@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\File;
-use App\Form\ImageUploadFormType;
+use App\Form\EditProfileFormType;
 use App\Repository\FileRepository;
 use App\Service\AwsS3Service;
 use DateTime;
@@ -13,6 +13,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
 
 class UserController extends AbstractController
 {
@@ -47,22 +49,18 @@ class UserController extends AbstractController
         $user = $this->getUser();
         $profileImg = $user->getProfileImg();
 
-
         $bucketName = 'my-bucket';
-        
-        $form = $this->createForm(ImageUploadFormType::class);
+
+        $form = $this->createForm(EditProfileFormType::class, $user);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form->get('image')->getData();
+            $userFormData = $form->getData();
             if ($file) {
                 $fileName = uniqid() . '.' . $file->guessExtension();
-                // Speichere die Datei temporär (optional)
                 $file->move('/tmp', $fileName);
-        
-                // Lade die Datei in den S3 Bucket hoch
-                
                 $path = $s3->uploadFile($bucketName, $fileName, '/tmp/' . $fileName); // Übergebe den Bucket-Namen, den Key und den Dateipfad
                 $uploadedFile = new File();
                 $uploadedFile->setFilePath($path);
@@ -70,17 +68,23 @@ class UserController extends AbstractController
                 $uploadedFile->setFileName($fileName);
                 $uploadedFile->setUser($this->getUser());
                 $entityManager->persist($uploadedFile);
-                $user->setProfileImg($uploadedFile);
-                $entityManager->persist($user);
                 if (!is_null($profileImg)) {
                     $oldProfileImg = $fileRepository->findOneBy(['id' => $profileImg->getId()]);
                     $s3->deleteFile($bucketName, $oldProfileImg->getFileName()); // Übergebe den Bucket-Namen, den Key und den Dateipfad
                     $entityManager->remove($oldProfileImg);
                 }
-                $entityManager->flush();
-                $this->addFlash('success', "Profilbild wurde erfolgreich geändert.");
-                return $this->redirectToRoute('app_admin_files');
+                $profileImg = $uploadedFile;
             }
+            
+            $user->setProfileImg($profileImg);
+            $user->setFirstName($userFormData->getFirstName());          
+            $user->setLastName($userFormData->getLastName());
+            $user->setEmail($userFormData->getEmail());
+            $entityManager->persist($user);
+
+            $entityManager->flush();
+            //$this->addFlash('success', "Profilbild wurde erfolgreich geändert.");
+            return $this->redirectToRoute('app_user_profile');
         }
         
         return $this->render('user/user_profile.html.twig', [
