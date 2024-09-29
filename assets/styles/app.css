@@ -187,7 +187,7 @@ body {
 ------------------------- */
 
 .featurette-divider {
-  margin: 5rem 0;
+  margin: 4rem 0;
   animation: fadeIn 2s ease;
   /* Space out the Bootstrap <hr> more */
 }
@@ -209,7 +209,7 @@ body {
 }
 
 .zoom:hover {
-  transform: scale(1.025);
+  transform: scale(1.035);
   /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
 }
 
@@ -245,31 +245,28 @@ body {
 .start-page-text-right{
   position: relative;
   right: -1900px ;
-  animation: slideInRight 1.25s ease forwards;
+  animation: slideInRight .95s ease forwards;
   animation-iteration-count: 1;
 }
 
 .start-page-text-left{
   position: relative;
   left: -1900px ;
-  animation: slideInLeft 1.25s ease forwards;
+  animation: slideInLeft .95s ease forwards;
   animation-iteration-count: 1;
 }
 
-
 .start-page-img-right{
   position: relative;
-  max-height: 260px;
   right: -1900px ;
-  animation: slideInRight 1.25s ease forwards;
+  animation: slideInRight .95s ease forwards;
   animation-iteration-count: 1;
 }
 
 .start-page-img-left{
   position: relative;
-  max-height: 260px;
   left: -1900px ;
-  animation: slideInLeft 1.25s ease forwards;
+  animation: slideInLeft .95s ease forwards;
   animation-iteration-count: 1;
 }
 
@@ -278,6 +275,9 @@ body {
   top: -650px;
   animation: drop 1.75s ease forwards;
   animation-iteration-count: 1;
+}
+.offcanvas.offcanvas-end {
+  width: 100%!important;
 }
 
 @keyframes slideInRight {
@@ -298,7 +298,6 @@ body {
   }
 }
 
-
 @keyframes drop {
   0% {
     opacity: 0
@@ -310,20 +309,5 @@ body {
 
   100% {
     transform: translateY(650px)
-  }
-}
-
-/* RESPONSIVE CSS
--------------------------------------------------- */
-
-@media (min-width: 40em) {
-  .featurette-heading {
-    font-size: 50px;
-  }
-}
-
-@media (min-width: 62em) {
-  .featurette-heading {
-    margin-top: 7rem;
   }
 }

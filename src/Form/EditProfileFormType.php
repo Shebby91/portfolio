@@ -51,16 +51,6 @@ class EditProfileFormType extends AbstractType
             ->add('lastname',  TextType::class, [
                 'label' => 'Lastname',
                 'attr' => [
-                    'class' => 'rounded-0'
-
-                ],
-                'row_attr' => [
-                    'class' => 'form-floating',
-                ], 
-            ])
-            ->add('email',  EmailType::class, [
-                'label' => 'Email',
-                'attr' => [
                     'class' => 'rounded-bottom rounded-top-0'
                 ],
                 'row_attr' => [
