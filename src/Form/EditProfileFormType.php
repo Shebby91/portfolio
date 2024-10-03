@@ -64,7 +64,7 @@ class EditProfileFormType extends AbstractType
                     
                 ], 
                 'attr' => [
-                    'class' => 'btn btn-primary d-flex align-items-center mt-3',
+                    'class' => 'btn btn-secondary d-flex align-items-center mt-3',
                 ],
             ]);
     }

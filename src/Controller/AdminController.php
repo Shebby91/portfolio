@@ -15,12 +15,15 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AdminController extends AbstractController
 {
     #[Route('/admin', name: 'app_admin')]
-    public function admin(Request $request, UserRepository $userRepository, PaginatorInterface $paginator): Response
+    public function admin(Request $request, UserRepository $userRepository, PaginatorInterface $paginator, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -34,10 +37,13 @@ class AdminController extends AbstractController
             20
         );
 
+        $csrfToken = $csrfTokenManager->getToken('action_id')->getValue();
+
         return $this->render('admin/admin.html.twig', [
             'title' => 'User',
             'users' => $users,
-            'user' => $user
+            'user' => $user,
+            'csrf_token' => $csrfToken
         ]);
     }
 
@@ -150,5 +156,66 @@ class AdminController extends AbstractController
         }
     
         return $this->redirectToRoute('app_admin_files');
+    }
+
+    #[Route('/admin/endpoint/reset/2fa', name: 'app_reset_2fa')]
+    public function reset2fa(Request $request, UserRepository $userRepository, EntityManagerInterface $em, CsrfTokenManagerInterface $csrfTokenManager, ValidatorInterface $validator): Response
+    {
+        $csrfToken = $request->headers->get('X-CSRF-TOKEN');
+
+        // Validierung des Tokens
+        if (!$csrfTokenManager->isTokenValid(new CsrfToken('action_id', $csrfToken))) {
+            return new JsonResponse(['error' => 'Invalid CSRF token'], 400);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['id'])) {
+            return new JsonResponse(['error' => 'Ungültige oder fehlende ID'], JsonResponse::HTTP_BAD_REQUEST);
+        }
+        
+        /** @var User $user */
+        $user = $userRepository->findOneBy(['id' => $data['id']]);
+
+        $user->setIsTwoFactorEnabled(false);
+        $user->setGoogleAuthenticatorSecret(NULL);
+        $em->persist($user);
+        $em->flush();
+
+        // Hier führst du deine Logik aus, z.B. Daten verarbeiten
+        $result = ['message' => 'Deactivated Auth_2 successfully for '.$user->getEmail() ];
+
+        return new JsonResponse($result);
+    }
+
+    #[Route('/admin/endpoint/reset/verified', name: 'app_reset_email_verified')]
+    public function resetVerified(Request $request, UserRepository $userRepository, CsrfTokenManagerInterface $csrfTokenManager, EntityManagerInterface $em): Response
+    {
+
+        $csrfToken = $request->headers->get('X-CSRF-TOKEN');
+
+        // Validierung des Tokens
+        if (!$csrfTokenManager->isTokenValid(new CsrfToken('action_id', $csrfToken))) {
+            return new JsonResponse(['error' => 'Invalid CSRF token'], 400);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['id'])) {
+            return new JsonResponse(['error' => 'Ungültige oder fehlende ID'], JsonResponse::HTTP_BAD_REQUEST);
+        }
+        
+        /** @var User $user */
+        $user = $userRepository->findOneBy(['id' => $data['id']]);
+
+        $user->setIsVerified(false);
+
+        $em->persist($user);
+        $em->flush();
+
+        // Hier führst du deine Logik aus, z.B. Daten verarbeiten
+        $result = ['message' => 'Deactivated Auth_1 successfully for '.$user->getEmail() ];
+
+        return new JsonResponse($result);
     }
 }

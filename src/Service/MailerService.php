@@ -2,6 +2,7 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Entity\File;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
@@ -22,13 +23,19 @@ class MailerService
     {
         $email = (new TemplatedEmail())
         ->from(new Address('portfolio@app.com'))
-        ->to($user->getEmail()) // Deine Gmail-Adresse
+        ->to(new Address($user->getEmail())) // Deine Gmail-Adresse
         ->subject($subject)
-        ->htmlTemplate('/email/'.$template.'.html.twig')
+        ->htmlTemplate('email/'.$template.'.html.twig')
         ->context([
             'user' => $user,
             'link' => $link,
         ]);
-        $this->mailer->send($email);
+
+        try {
+            $this->mailer->send($email);
+        } catch (\Exception $e) {
+            throw new \Exception('Failed to send email: ' . $e->getMessage());
+        }
+
     }
 }

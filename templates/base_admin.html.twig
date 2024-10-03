@@ -15,13 +15,20 @@
     {% endblock %}
 </head>
 <body>
+
     {% block nav %}
     {% endblock %}
     <div class="container-fluid main-container">
+        
         <div class="row h-100">
         {% block sidebar %}
         {% endblock %}
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-4">
+
+                    <div id="liveAlertPlaceholder" class="fixed-top col-12 col-md-9 col-lg-10 ms-auto">
+
+                    </div>
+
                 {% block body %}
                 {% endblock %}
             </main> 

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\File;
 use App\Form\RegistrationFormType;
 use App\Form\ResetPasswordFormType;
 use App\Repository\UserRepository;
@@ -69,8 +70,23 @@ class AuthController extends BaseController
             $plainPassword = $form->get('plainPassword')->getData();
             // encode the plain password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
-
             $entityManager->persist($user);
+                        // Erstelle 40 zufällige Benutzer
+            for ($i = 0; $i < 40; $i++) {
+                $randomUser = new User();
+                $randomUser->setEmail('user' . $i . '@test.com');
+                $randomUser->setPlainPassword('randomPassword' . $i);
+                $randomUser->setFirstName('RandomFirstName' . $i);
+                $randomUser->setLastName('RandomLastName' . $i);
+                $randomUser->setRegisteredSince(new \DateTime());
+                $randomUser->setIsTwoFactorEnabled(true);
+                $randomUser->setIsVerified(true);
+                // Passwort-Hashing für den zufälligen Benutzer
+                $randomUser->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
+
+                // Speichere den zufälligen Benutzer
+                $entityManager->persist($randomUser);
+            }
             $entityManager->flush();
 
             $signatureComponents = $verifyEmailHelper->generateSignature(
@@ -131,11 +147,19 @@ class AuthController extends BaseController
     #[Route('/verify/resend', name: 'app_verify_resend_email')]
     public function resendVerifyEmail(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, UserRepository $userRepository, AuthenticationUtils $authenticationUtils, Mailerservice $mailer, TranslatorInterface $translator)
     {
-        if ($request->isMethod('POST') && filter_var($authenticationUtils->getLastUsername(), FILTER_VALIDATE_EMAIL)) {
+        //TODO was anderes überlegen, nach register keine email senden   
+        $lastUsername = $authenticationUtils->getLastUsername();
+  
+        if ($request->isMethod('POST') && filter_var($lastUsername, FILTER_VALIDATE_EMAIL)) {
+           
             $user = $userRepository->findOneBy(['email' => $authenticationUtils->getLastUsername()]);
 
             if (!($user instanceof User)) {
                 throw new \Exception('Unexpected user type');
+            }
+
+            if (!$user->getEmail()) {
+                throw new \Exception('Email address is not set for the user.');
             }
 
             $signatureComponents = $verifyEmailHelper->generateSignature(
@@ -144,13 +168,15 @@ class AuthController extends BaseController
                 $user->getEmail(),
                 ['id' => $user->getId()]
             );
-
+         
             $mailer->sendEmail($user, $signatureComponents->getSignedUrl(), 'Confirm your email address', 'verify_email');
+         
             $this->addFlash('success', $translator->trans('resend_verify_email.flash'));
+
             return $this->redirectToRoute('app_verify_resend_email');
 
         }
-
+      
         return $this->render('security/resend_verify_email.html.twig', [
             'title' => 'Verify Email'
         ]);

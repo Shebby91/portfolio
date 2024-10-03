@@ -1,4 +1,4 @@
-{% extends 'base_admin.html.twig' %} {% block title %}{{ title }}{% endblock %} 
+{% extends 'base_admin.html.twig' %} {% block title %}{{ title }}{% endblock %}
 {% block nav %}
 {% include "admin/admin_nav.html.twig" %}
 {% endblock %}
@@ -6,49 +6,54 @@
 {% include "admin/admin_sidebar.html.twig" %}
 {% endblock %}
 {% block body %}
+
 <div class="w-100 h-100 d-flex flex-column justify-content-between">
   <div class="table-responsive w-100">
     <table class="table table-sm table-striped align-middle border shadow">
-    <thead>
-      <tr>
-        <th scope="col">Email</th>
-        <th scope="col">Firstname</th>
-        <th scope="col">Lastname</th>
-        <th scope="col">Registerd</th>
-        <th class="text-center" scope="col">Auth1</th>
-        <th class="text-center" scope="col">Auth2</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for user in users %}
-      <tr>
-        <td>{{ user.email }}</td>
-        <td>{{ user.firstName }}</td>
-        <td>{{ user.lastName }}</td>
-        <td>{{ user.registeredSince|date("d.m.Y")}}</td>
-        <td class="text-center">
-          {% if user.isVerified %}
-            {% include 'components/switch.html.twig' with {'class': 'text-bg-success text-success', 'checked': 'checked', 'disabled': '' } only %}
-          {% else %}
-              {% include 'components/switch.html.twig' with {'class': 'text-bg-danger text-danger', 'checked': '', 'disabled': 'disabled' } only %}
-          {% endif %}
-        </td>
-        <td class="text-center">
-          {% if user.isTwoFactorEnabled %}
-            {% include 'components/switch.html.twig' with {'class': 'text-bg-success text-success', 'checked': 'checked', 'disabled': '' } only %}
-          {% else %}
-            {% include 'components/switch.html.twig' with {'class': 'text-bg-danger text-danger', 'checked': '', 'disabled': 'disabled' } only %}
-          {% endif %}
-      </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+      <thead>
+        <tr>
+          <th scope="col">Email</th>
+          <th scope="col">Firstname</th>
+          <th scope="col">Lastname</th>
+          <th scope="col">Registerd</th>
+          <th class="text-center" scope="col">Auth_1</th>
+          <th class="text-center" scope="col">Auth_2</th>
+        </tr>
+      </thead>
+      <tbody data-controller="switch">
+        {% for user in users %}
+        <tr>
+          <td>{{ user.email }}</td>
+          <td>{{ user.firstName }}</td>
+          <td>{{ user.lastName }}</td>
+          <td>{{ user.registeredSince|date("d.m.Y")}}</td>
+          <td class="text-center">
+            {% if user.isVerified %}
+            {% include 'components/switch.html.twig' with {'class': 'text-bg-success text-success', 'checked':
+            'checked', 'disabled': '', 'type': 1, 'id': user.id } only %}
+            {% else %}
+            {% include 'components/switch.html.twig' with {'class': 'text-bg-danger text-danger', 'checked': '',
+            'disabled': 'disabled', 'type': 1, 'id': user.id } only %}
+            {% endif %}
+          </td>
+          <td class="text-center">
+            {% if user.isTwoFactorEnabled %}
+            {% include 'components/switch.html.twig' with {'class': 'text-bg-success text-success', 'checked':
+            'checked', 'disabled': '', 'type': 2, 'id': user.id } only %}
+            {% else %}
+            {% include 'components/switch.html.twig' with {'class': 'text-bg-danger text-danger', 'checked': '',
+            'disabled': 'disabled', 'type': 2, 'id': user.id } only %}
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <input id="csrf_token" type="hidden" name="csrf_toke" value="{{csrf_token}}" <div class="row">
+
   </div>
-  <div class="row">
-    <div class="col-12 d-flex justify-content-center">
-      {{ knp_pagination_render(users) }}
-    </div>
+  <div class="col-12 d-flex justify-content-center">
+    {{ knp_pagination_render(users) }}
   </div>
 </div>
 {% endblock %}

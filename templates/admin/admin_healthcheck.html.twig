@@ -12,7 +12,7 @@
             <thead>
               <tr>
                 <th scope="col">Connection</th>
-                <th scope="col">Status</th>
+                <th class="d-flex justify-content-center" scope="col">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -20,7 +20,7 @@
                 <td class="text-left">
                   Verbindung zur Datenbank
               </td>
-                <td>
+                <td class="text-center">
                   {% if connection %}
                   <span class="badge text-bg-success text-success">1</span>
                  {% endif %}
@@ -34,7 +34,7 @@
                 <td class="text-left">
                   {{ s3Status.message }}
               </td>
-                <td>
+                <td class="text-center">
                   {% if s3Status.status == true %}
                   <span class="badge text-bg-success text-success">1</span>
                   {% else %}

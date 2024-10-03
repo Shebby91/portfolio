@@ -51,6 +51,8 @@ class UserController extends AbstractController
 
         $bucketName = 'my-bucket';
 
+        $s3->checkOrCreateBucket($bucketName);
+
         $form = $this->createForm(EditProfileFormType::class, $user);
 
         $form->handleRequest($request);
@@ -75,7 +77,6 @@ class UserController extends AbstractController
                 }
                 $profileImg = $uploadedFile;
             }
-            
             $user->setProfileImg($profileImg);
             $user->setFirstName($userFormData->getFirstName());          
             $user->setLastName($userFormData->getLastName());
