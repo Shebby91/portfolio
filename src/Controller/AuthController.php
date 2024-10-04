@@ -71,7 +71,7 @@ class AuthController extends BaseController
             // encode the plain password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
             $entityManager->persist($user);
-                        // Erstelle 40 zufällige Benutzer
+            /*
             for ($i = 0; $i < 40; $i++) {
                 $randomUser = new User();
                 $randomUser->setEmail('user' . $i . '@test.com');
@@ -86,7 +86,7 @@ class AuthController extends BaseController
 
                 // Speichere den zufälligen Benutzer
                 $entityManager->persist($randomUser);
-            }
+            }*/
             $entityManager->flush();
 
             $signatureComponents = $verifyEmailHelper->generateSignature(

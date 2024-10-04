@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\File;
 use App\Form\EditProfileFormType;
 use App\Repository\FileRepository;
+use App\Repository\UserRepository;
 use App\Service\AwsS3Service;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,14 +32,20 @@ class UserController extends AbstractController
     }
 
     #[Route('/user/album', name: 'app_user_album')]
-    public function userAlbum(): Response
+    public function userAlbum(UserRepository $userRepository, EntityManagerInterface $entityManager, FileRepository $fileRepository): Response
     {
         $user = $this->getUser();
-        
-        
+        $adminUser = $userRepository->findOneBy(['email' => 'admin@test.com']);
+        $fileRepository->findBy(['user' => $adminUser], ['lastModified' => 'DESC'], );
+
+        $images = $fileRepository->findBy(['user' => $adminUser], ['lastModified' => 'DESC'], );
+
+
+
         return $this->render('user/user_album.html.twig', [
             'title' => 'Album',
-            'user' => $user
+            'user' => $user,
+            'images' => $images 
         ]);
     }
 

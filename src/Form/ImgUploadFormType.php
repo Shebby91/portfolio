@@ -18,9 +18,10 @@ class ImageUploadFormType extends AbstractType
                 'label' => 'Bild hochladen',
                 'constraints' => [
                     new File([
-                        'maxSize' => '5M',
+                        'maxSize' => '10M',
                         'mimeTypes' => [
                             'image/png',
+                            'image/jpg',
                             'image/jpeg',
                             'image/gif',
                         ],

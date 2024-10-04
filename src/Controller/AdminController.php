@@ -82,9 +82,12 @@ class AdminController extends AbstractController
 
         $form = $this->createForm(ImageUploadFormType::class);
         $form->handleRequest($request);
+        //dd($form->isValid());
+ 
 
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form->get('image')->getData();
+            
             if ($file) {
                 $fileName = uniqid() . '.' . $file->guessExtension();
                 // Speichere die Datei temporär (optional)
@@ -106,9 +109,10 @@ class AdminController extends AbstractController
                 $entityManager->flush();
                 $this->addFlash('success', "Datei '$fileName' wurde erfolgreich hochgeladen.");
                 return $this->redirectToRoute('app_admin_files');
+            }       if ( !$form->isValid()) {
+                dd($form->getErrors());
             }
         }
-
         return $this->render('admin/admin_files.html.twig', [
             'files' => $files,
             'title' => 'Files',
