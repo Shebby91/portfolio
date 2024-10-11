@@ -14,18 +14,17 @@ export default class extends Controller {
         const imgModal = document.getElementById('imagesModal')
         imgModal.addEventListener('show.bs.modal', event => {
             const aspectRatio = event.relatedTarget.querySelector('img').naturalWidth / event.relatedTarget.querySelector('img').naturalHeight;
+            const img = document.getElementById('imagesModalImage');
             if (aspectRatio > 1) {
-                document.getElementById('imagesModalImage').style.maxWidth = '85%';
-                document.getElementById('imagesModalImage').style.maxHeight = '';
-                document.getElementById('imagesModalImage').src = event.relatedTarget.querySelector('img').src;
+                img.style.maxWidth = '75%';
+                img.style.maxHeight = '';
+                img.src = event.relatedTarget.querySelector('img').src;
             } else {
-                document.getElementById('imagesModalImage').style.width = 'auto';
-                document.getElementById('imagesModalImage').style.maxWidth = '';
-                document.getElementById('imagesModalImage').style.maxHeight = '95%';
-                document.getElementById('imagesModalImage').src = event.relatedTarget.querySelector('img').src;
-
+                img.style.width = 'auto';
+                img.style.maxWidth = '';
+                img.style.maxHeight = '95%';
+                img.src = event.relatedTarget.querySelector('img').src;
             }
-            
         })
     }
 }
