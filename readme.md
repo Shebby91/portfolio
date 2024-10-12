@@ -1,4 +1,4 @@
-Project Overview
+0. Project OverviewL:
 This project leverages containerized services orchestrated via Docker to build a robust and scalable development environment for a Symfony web application. It includes various services for log management, email testing, AWS simulation, and data visualization, all interconnected within a Docker network.
 
 Services
