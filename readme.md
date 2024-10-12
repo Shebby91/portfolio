@@ -24,27 +24,20 @@ Usage: Catches and displays emails sent by the Symfony application, including re
 6. LocalStack
 Purpose: A fully functional local AWS cloud stack used to simulate AWS services.
 Integration: Simulates AWS S3, allowing the Symfony application to upload and manage files as if interacting with the real AWS infrastructure.
-
-Symfony Application:
-
+7. Symfony Application:
 Sends logs of user activities (e.g., registrations, logins) to Logstash over HTTP.
 Sends emails for testing purposes to Mailpit.
 Uploads files to LocalStack simulating AWS S3.
-Logstash:
-
+8. Logstash:
 Receives logs from Symfony via HTTP input on port 5044 and processes them.
 Forwards the processed logs to Elasticsearch for storage.
-Elasticsearch:
-
+9. Elasticsearch:
 Stores all logs received from Logstash in an indexed format, making them searchable and easy to analyze.
-Kibana:
-
+10. Kibana:
 Visualizes data from Elasticsearch, providing an interface to explore log data, such as login attempts and registration successes.
-Mailpit:
-
+11. Mailpit:
 Receives and displays email messages for testing purposes, capturing emails sent by Symfony to avoid real email dispatch during development.
-LocalStack:
-
+12. LocalStack:
 Provides an emulated AWS environment, enabling local file uploads to a simulated S3 bucket without interacting with live AWS services.
 Workflow
 A user registers or logs in via the Symfony application.
@@ -60,7 +53,7 @@ Centralized Logging: Logs from the Symfony application are collected, processed,
 Email Testing: Using Mailpit ensures that no real emails are sent, facilitating safe email testing in a development environment.
 AWS Service Simulation: LocalStack enables the simulation of AWS services like S3, allowing for local development without incurring AWS costs.
 
-7. Essential Commands
+13. Essential Commands
 
 wsl -d Ubuntu
 
@@ -80,7 +73,7 @@ sudo docker-compose down
 
 curl -X POST http://logstash:5044 -H "Content-Type: application/json" -d '{"message": "Log message", "level": "info", "context": {"user": "test_user"}}'
 
-7. Important Commands
+14. Important Commands
 
 sudo chown -R $(whoami):$(whoami) var/cache var/logs
 
