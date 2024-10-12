@@ -16,9 +16,9 @@ php bin/console doctrine:fixtures:load
 
 sudo docker-compose down
 
-'Important Commands'
-
 curl -X POST http://logstash:5044 -H "Content-Type: application/json" -d '{"message": "Log message", "level": "info", "context": {"user": "test_user"}}'
+
+'Important Commands'
 
 sudo chown -R $(whoami):$(whoami) var/cache var/logs
 

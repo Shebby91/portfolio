@@ -8,6 +8,7 @@ use App\Repository\UserRepository;
 use App\Service\AwsS3Service;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Form\ImageUploadFormType;
+use App\Logger\Logger;
 use App\Repository\FileRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -60,7 +61,7 @@ class AdminController extends AbstractController
     }
 
     #[Route('/admin/files', name: 'app_admin_files')]
-    public function adminFiles(Request $request, AwsS3Service $s3, PaginatorInterface $paginator, EntityManagerInterface $entityManager, FileRepository $fileRepository): Response
+    public function adminFiles(Request $request, AwsS3Service $s3, PaginatorInterface $paginator, EntityManagerInterface $entityManager, FileRepository $fileRepository, Logger $logger): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -107,10 +108,9 @@ class AdminController extends AbstractController
                 }
                 $entityManager->persist($user);
                 $entityManager->flush();
+                $logger->info('user_file_upload', ['user' => $user->getEmail()]);
                 $this->addFlash('success', "Datei '$fileName' wurde erfolgreich hochgeladen.");
                 return $this->redirectToRoute('app_admin_files');
-            }       if ( !$form->isValid()) {
-                dd($form->getErrors());
             }
         }
         return $this->render('admin/admin_files.html.twig', [

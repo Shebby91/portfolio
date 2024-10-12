@@ -60,8 +60,7 @@ class AuthController extends BaseController
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
         
-        $logger->debug('Debug log entry');
-        $logger->info('Info log entry');
+
 
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -76,7 +75,7 @@ class AuthController extends BaseController
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
             $entityManager->persist($user);
             /*
-            for ($i = 0; $i < 40; $i++) {
+            for ($i = 100; $i < 121; $i++) {
                 $randomUser = new User();
                 $randomUser->setEmail('user' . $i . '@test.com');
                 $randomUser->setPlainPassword('randomPassword' . $i);
@@ -87,7 +86,7 @@ class AuthController extends BaseController
                 $randomUser->setIsVerified(true);
                 // Passwort-Hashing für den zufälligen Benutzer
                 $randomUser->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
-
+                $logger->info('user_registration_success', ['user' => $user->getEmail()]);
                 // Speichere den zufälligen Benutzer
                 $entityManager->persist($randomUser);
             }*/
@@ -102,6 +101,7 @@ class AuthController extends BaseController
 
             $mailer->sendEmail($user, $signatureComponents->getSignedUrl(), 'Confirm your email address', 'verify_email');
             $this->addFlash('success', $translator->trans('resend_verify_email.flash'));
+            $logger->info('user_registration_success', ['user' => $user->getEmail()]);
             return $this->redirectToRoute('app_verify_resend_email');
         }
 

@@ -12,16 +12,19 @@ use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use App\Logger\Logger;
 
 class CheckVerifiedUserSubscriber implements EventSubscriberInterface
 {
     private RouterInterface $router;
     private Security $security;
+    private Logger $logger;
 
-    public function __construct(RouterInterface $router, Security $security)
+    public function __construct(RouterInterface $router, Security $security, Logger $logger)
     {
         $this->router = $router;
         $this->security = $security;
+        $this->logger = $logger;
     }
 
     public function onCheckPassport(CheckPassportEvent $event)
@@ -81,6 +84,14 @@ class CheckVerifiedUserSubscriber implements EventSubscriberInterface
                 ? $this->router->generate('app_admin')
                 : $this->router->generate('app_user')
         );
+
+        if ($event->getRequest()->getRequestUri() == '/') {
+            $this->logger->info('user_login_success_password', ['user' => $user->getEmail()]);
+        }
+
+        if ($event->getRequest()->getRequestUri() == '/2fa_check') {
+            $this->logger->info('user_login_success_twoFactor', ['user' => $user->getEmail()]);
+        }
 
         $event->setResponse($response);
     }

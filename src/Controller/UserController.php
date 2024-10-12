@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\File;
 use App\Form\EditProfileFormType;
+use App\Logger\Logger;
 use App\Repository\FileRepository;
 use App\Repository\UserRepository;
 use App\Service\AwsS3Service;
@@ -50,7 +51,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/user/profile', name: 'app_user_profile')]
-    public function userProfile(Request $request, AwsS3Service $s3, PaginatorInterface $paginator, EntityManagerInterface $entityManager, FileRepository $fileRepository): Response
+    public function userProfile(Request $request, AwsS3Service $s3, PaginatorInterface $paginator, EntityManagerInterface $entityManager, FileRepository $fileRepository, Logger $logger): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -92,6 +93,7 @@ class UserController extends AbstractController
 
             $entityManager->flush();
             //$this->addFlash('success', "Profilbild wurde erfolgreich geändert.");
+            $logger->info('user_file_upload', ['user' => $user->getEmail()]);
             return $this->redirectToRoute('app_user_profile');
         }
         
