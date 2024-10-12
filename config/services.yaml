@@ -39,3 +39,6 @@ services:
             $awsKey: '%env(AWS_ACCESS_KEY_ID)%'
             $awsSecret: '%env(AWS_SECRET_ACCESS_KEY)%'
             $awsEndpoint: '%env(AWS_ENDPOINT)%'
+    App\Logger\Logger:
+        arguments:
+            $logstashUrl: 'http://logstash:5044'

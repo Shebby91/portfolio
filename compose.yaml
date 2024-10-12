@@ -19,6 +19,11 @@ services:
       - db_test
       - mailer
       - localstack
+      - elasticsearch
+      - logstash
+      - kibana
+    extra_hosts:
+      - "elasticsearch:host-gateway" # Kommunikation mit Elasticsearch sicherstellen
 
   db_prod:
     image: mariadb:latest
@@ -80,9 +85,45 @@ services:
     networks:
       - backend
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.13
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - backend
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.17.13
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+    ports:
+      - "5044:5044"
+    depends_on:
+      - elasticsearch
+    networks:
+      - backend
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.13
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - backend
+
 volumes:
   db_prod_data:
   db_test_data:
+  esdata:
 
 networks:
   backend:

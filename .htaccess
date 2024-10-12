@@ -20,8 +20,8 @@ Options +FollowSymlinks
     RewriteEngine On
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(.*)$ public/$1 [L]
-    php_value upload_max_filesize 10M
-    php_value post_max_size 12M
+    php_value upload_max_filesize 20M
+    php_value post_max_size 20M
 </IfModule>
 
 <IfModule !mod_rewrite.c>

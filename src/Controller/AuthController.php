@@ -27,7 +27,8 @@ use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\Writer\WebPWriter;
 use Scheb\TwoFactorBundle\Model\Google\TwoFactorInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
+use App\Logger\Logger;
+use Psr\Log\LoggerInterface;
 use App\Service\MailerService;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -52,13 +53,16 @@ class AuthController extends BaseController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, VerifyEmailHelperInterface $verifyEmailHelper, Mailerservice $mailer, TranslatorInterface $translator): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, VerifyEmailHelperInterface $verifyEmailHelper, Mailerservice $mailer, TranslatorInterface $translator, Logger $logger): Response
     {
         $user = new User();
         $user->setRegisteredSince(new \DateTime());
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
         
+        $logger->debug('Debug log entry');
+        $logger->info('Info log entry');
+
         if ($form->isSubmitted() && $form->isValid()) {
 
             if (!filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) {

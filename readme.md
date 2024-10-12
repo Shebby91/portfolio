@@ -18,6 +18,8 @@ sudo docker-compose down
 
 'Important Commands'
 
+curl -X POST http://logstash:5044 -H "Content-Type: application/json" -d '{"message": "Log message", "level": "info", "context": {"user": "test_user"}}'
+
 sudo chown -R $(whoami):$(whoami) var/cache var/logs
 
 #php bin/console make:migration
