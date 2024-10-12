@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %} {% block title %}{{ title }}{% endblock %} 
+{% block body %}
+
+
+<!-- Modal -->
+<div class="modal fade" id="imagesModal" tabindex="-1" aria-labelledby="imagesModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="imagesModalLabel">Image</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex align-items-center justify-content-center">
+        <img id="imagesModalImage" src="" class="img-fluid shadow" width="100%" height="200">
+      </div>
+      <!--<div class="modal-footer">
+      </div>-->
+    </div>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row" data-masonry='{"percentPosition": true }' data-controller="album">
+    {% for img in images %}
+    <div data-bs-toggle="modal" data-bs-target="#imagesModal" class="col-sm-6 col-lg-4 mb-4">
+      <div class="card zoom bg-body-tertiary shadow">
+        <img src="{{ img.filePath }}" class="bd-placeholder-img card-img-top img-fluid" width="100%" height="200" alt="{{ img.fileName }}">
+        <div class="card-body">
+          <p class="card-text">{{ img.LastModified|date("d.m.Y") }}</p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+{% block javascripts_bottom_body %}
+  {{ parent() }}
+    <script async src="{{ asset('vendor/@masonry/masonry.pkgd.min.js') }}"></script>
+{% endblock %}

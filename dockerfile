@@ -14,6 +14,8 @@ RUN apt-get update && apt-get install -y \
     libwebp-dev \
     libpng-dev \
     libxml2-dev \
+    python3-pip \
+    && pip3 install s3cmd \
     && docker-php-ext-install pdo pdo_mysql zip \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl mbstring xml \
@@ -26,6 +28,9 @@ WORKDIR /var/www/html
 COPY . .
 RUN composer install --optimize-autoloader
 RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data var/log
+RUN chown -R www-data:www-data var/cache
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+RUN sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 EXPOSE 80
 CMD ["apache2-foreground"]

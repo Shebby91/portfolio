@@ -9,6 +9,7 @@ services:
       - APP_ENV=${APP_ENV}
       - APP_DEBUG=${APP_DEBUG}
       - DATABASE_URL=${DATABASE_URL}
+      - AWS_ENDPOINT=${AWS_ENDPOINT}
     networks:
       - backend
     ports:
@@ -17,6 +18,12 @@ services:
       - db_prod
       - db_test
       - mailer
+      - localstack
+      - elasticsearch
+      - logstash
+      - kibana
+    extra_hosts:
+      - "elasticsearch:host-gateway" # Kommunikation mit Elasticsearch sicherstellen
 
   db_prod:
     image: mariadb:latest
@@ -64,9 +71,59 @@ services:
     networks:
       - backend
 
+  localstack:
+    image: localstack/localstack:latest
+    environment:
+      - SERVICES=s3
+      - AWS_DEFAULT_REGION=us-east-1
+      - DEBUG=1
+    ports:
+      - "4566:4566"  # LocalStack Gateway für alle Dienste
+      - "4572:4572"  # S3
+    volumes:
+      - "./localstack:/var/lib/localstack"
+    networks:
+      - backend
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.13
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - backend
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.17.13
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+    ports:
+      - "5044:5044"
+    depends_on:
+      - elasticsearch
+    networks:
+      - backend
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.13
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - backend
+
 volumes:
   db_prod_data:
   db_test_data:
+  esdata:
 
 networks:
   backend:

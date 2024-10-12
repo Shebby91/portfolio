@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\File;
 use App\Form\RegistrationFormType;
 use App\Form\ResetPasswordFormType;
 use App\Repository\UserRepository;
@@ -26,14 +27,23 @@ use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\Writer\WebPWriter;
 use Scheb\TwoFactorBundle\Model\Google\TwoFactorInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
+use App\Logger\Logger;
+use Psr\Log\LoggerInterface;
 use App\Service\MailerService;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AuthController extends BaseController
 {
     #[Route('/', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
+        $user = $this->getUser();
+        if ($user) {
+            if (in_array('ROLE_ADMIN', $user->getRoles())) {
+                return $this->redirectToRoute('app_admin');
+            }
+            return $this->redirectToRoute('app_user');
+        }
 
         return $this->render('security/login.html.twig', [
             'error' => $authenticationUtils->getLastAuthenticationError(),
@@ -43,20 +53,43 @@ class AuthController extends BaseController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, VerifyEmailHelperInterface $verifyEmailHelper, Mailerservice $mailer): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, VerifyEmailHelperInterface $verifyEmailHelper, Mailerservice $mailer, TranslatorInterface $translator, Logger $logger): Response
     {
         $user = new User();
+        $user->setRegisteredSince(new \DateTime());
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
         
+
+
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if (!filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) {
+                $this->addFlash('error', 'Invalid email address.');
+                return $this->redirectToRoute('app_register');
+            }
+
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
-
             // encode the plain password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
-
             $entityManager->persist($user);
+            /*
+            for ($i = 100; $i < 121; $i++) {
+                $randomUser = new User();
+                $randomUser->setEmail('user' . $i . '@test.com');
+                $randomUser->setPlainPassword('randomPassword' . $i);
+                $randomUser->setFirstName('RandomFirstName' . $i);
+                $randomUser->setLastName('RandomLastName' . $i);
+                $randomUser->setRegisteredSince(new \DateTime());
+                $randomUser->setIsTwoFactorEnabled(true);
+                $randomUser->setIsVerified(true);
+                // Passwort-Hashing für den zufälligen Benutzer
+                $randomUser->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
+                $logger->info('user_registration_success', ['user' => $user->getEmail()]);
+                // Speichere den zufälligen Benutzer
+                $entityManager->persist($randomUser);
+            }*/
             $entityManager->flush();
 
             $signatureComponents = $verifyEmailHelper->generateSignature(
@@ -67,7 +100,8 @@ class AuthController extends BaseController
             );
 
             $mailer->sendEmail($user, $signatureComponents->getSignedUrl(), 'Confirm your email address', 'verify_email');
-            $this->addFlash('success', 'You have received an email to confirm your address. Please click the confirmation link in the email to complete your registration.');
+            $this->addFlash('success', $translator->trans('resend_verify_email.flash'));
+            $logger->info('user_registration_success', ['user' => $user->getEmail()]);
             return $this->redirectToRoute('app_verify_resend_email');
         }
 
@@ -115,13 +149,21 @@ class AuthController extends BaseController
     }
 
     #[Route('/verify/resend', name: 'app_verify_resend_email')]
-    public function resendVerifyEmail(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, UserRepository $userRepository, AuthenticationUtils $authenticationUtils, Mailerservice $mailer)
+    public function resendVerifyEmail(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, UserRepository $userRepository, AuthenticationUtils $authenticationUtils, Mailerservice $mailer, TranslatorInterface $translator)
     {
-        if ($request->isMethod('POST') && filter_var($authenticationUtils->getLastUsername(), FILTER_VALIDATE_EMAIL)) {
+        //TODO was anderes überlegen, nach register keine email senden   
+        $lastUsername = $authenticationUtils->getLastUsername();
+  
+        if ($request->isMethod('POST') && filter_var($lastUsername, FILTER_VALIDATE_EMAIL)) {
+           
             $user = $userRepository->findOneBy(['email' => $authenticationUtils->getLastUsername()]);
 
             if (!($user instanceof User)) {
                 throw new \Exception('Unexpected user type');
+            }
+
+            if (!$user->getEmail()) {
+                throw new \Exception('Email address is not set for the user.');
             }
 
             $signatureComponents = $verifyEmailHelper->generateSignature(
@@ -130,13 +172,15 @@ class AuthController extends BaseController
                 $user->getEmail(),
                 ['id' => $user->getId()]
             );
-
+         
             $mailer->sendEmail($user, $signatureComponents->getSignedUrl(), 'Confirm your email address', 'verify_email');
-            $this->addFlash('success', 'You have received an email to confirm your address. Please click the confirmation link in the email to complete your registration.');
+         
+            $this->addFlash('success', $translator->trans('resend_verify_email.flash'));
+
             return $this->redirectToRoute('app_verify_resend_email');
 
         }
-
+      
         return $this->render('security/resend_verify_email.html.twig', [
             'title' => 'Verify Email'
         ]);

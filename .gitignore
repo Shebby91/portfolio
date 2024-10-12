@@ -24,3 +24,4 @@
 /assets/vendor/@hotwired
 /assets/vendor/installed.php
 ###< symfony/asset-mapper ###
+/localstack/cache

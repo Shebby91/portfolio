@@ -1,11 +1,25 @@
-<header class="mb-auto">
-    <div>
-        <h3 class="float-md-start mb-0">{{ title }}</h3>
-        <nav class="nav nav-masthead justify-content-center float-md-end">
-            <a class="nav-link fw-bold py-1 px-0 text-light" aria-current="page" href="{{ path('app_admin') }}">Home</a>
-            <a class="nav-link fw-bold py-1 px-0 text-light" href="{{ path('app_healthcheck') }}">Healthcheck</a>
-            <a class="nav-link fw-bold py-1 px-0 text-light" href="{{ path('app_user') }}">User Area</a>
-            <a class="nav-link fw-bold py-1 px-0 text-danger" href="{{ path('app_logout') }}">Logout</a>
-        </nav>
+<header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
+    <a class="navbar-brand col-12 col-md-3 col-lg-2 me-0 h4 text-white px-3 py-3 m-0"
+        href="{{path('app_admin')}}">Portfolio</a>
+    <div class="d-flex w-100 justify-content-between py-2 mx-3 mx-md-4">
+        <div class="d-flex align-items-center">
+            <span class="h4 m-0">{{title}}</span>
+        </div>
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center link-body-emphasis text-decoration-none dropdown-toggle"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <img {% if user.profileImg is not null %}src="{{user.profileImg.filePath}}" {% else
+                    %}src="{{ asset('images/default_profile.jpg') }}" {% endif %} alt="" width="32" height="32"
+                    class="rounded-circle me-2">
+                <strong>{{user.firstName}} {{user.lastName}}</strong>
+            </a>
+            <ul class="dropdown-menu text-small shadow">
+                {#<li><a class="dropdown-item" href="#">Profile</a></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>#}
+                <li><a class="dropdown-item" href="{{path('app_logout')}}">Sign out</a></li>
+            </ul>
+        </div>
     </div>
 </header>
