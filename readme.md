@@ -1,4 +1,4 @@
-0. Project OverviewL:
+0. Project Overview:
 This project leverages containerized services orchestrated via Docker to build a robust and scalable development environment for a Symfony web application. It includes various services for log management, email testing, AWS simulation, and data visualization, all interconnected within a Docker network.
 _________________________________________
 Services
@@ -53,42 +53,42 @@ Provides an emulated AWS environment, enabling local file uploads to a simulated
 _________________________________________
 13. Essential Commands
 
-wsl -d Ubuntu
-
-sudo docker-compose -f compose.yaml --env-file .env.dev build --no-cache
-
-sudo docker-compose -f compose.yaml --env-file .env.dev up -d
-
-sudo docker exec -it portfolio-app-1 /bin/bash
-
-php bin/console make:migration
-
-php bin/console doctrine:migrations:migrate
-
-php bin/console doctrine:fixtures:load
-
-sudo docker-compose down
-
-curl -X POST http://logstash:5044 -H "Content-Type: application/json" -d '{"message": "Log message", "level": "info", "context": {"user": "test_user"}}'
+    wsl -d Ubuntu
+    
+    sudo docker-compose -f compose.yaml --env-file .env.dev build --no-cache
+    
+    sudo docker-compose -f compose.yaml --env-file .env.dev up -d
+    
+    sudo docker exec -it portfolio-app-1 /bin/bash
+    
+    php bin/console make:migration
+    
+    php bin/console doctrine:migrations:migrate
+    
+    php bin/console doctrine:fixtures:load
+    
+    sudo docker-compose down
 _________________________________________
 14. Important Commands
 
-sudo chown -R $(whoami):$(whoami) var/cache var/logs
+    curl -X POST "your_url" -H "Content-Type: application/json" -d '{"message": "Log message", "level": "info", "context": {"user": "test_user"}}'
 
-#php bin/console make:migration
+    sudo chown -R $(whoami):$(whoami) var/cache var/logs
 
-#php bin/console make:entity
+    #php bin/console make:migration
 
-#php bin/console make:controller    
+    #php bin/console make:entity
 
-#php bin/console make:form
+    #php bin/console make:controller    
 
-#php bin/console asset-map:compile
+    #php bin/console make:form
 
-#php bin/console make:fixtures
+    #php bin/console asset-map:compile
 
-#php bin/console make:factory
+    #php bin/console make:fixtures
 
-php bin/console messenger:consume async
+    #php bin/console make:factory
 
-php bin/console messenger:failed:show
+    php bin/console messenger:consume async
+
+    php bin/console messenger:failed:show
