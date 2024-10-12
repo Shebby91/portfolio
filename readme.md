@@ -33,27 +33,6 @@ _________________________________________
 Purpose: A fully functional local AWS cloud stack used to simulate AWS services.
 Integration: Simulates AWS S3, allowing the Symfony application to upload and manage files as if interacting with the real AWS infrastructure.
 _________________________________________
-7. Symfony Application:
-Sends logs of user activities (e.g., registrations, logins) to Logstash over HTTP.
-Sends emails for testing purposes to Mailpit.
-Uploads files to LocalStack simulating AWS S3.
-_________________________________________
-8. Logstash:
-Receives logs from Symfony via HTTP input on port 5044 and processes them.
-Forwards the processed logs to Elasticsearch for storage.
-_________________________________________
-9. Elasticsearch:
-Stores all logs received from Logstash in an indexed format, making them searchable and easy to analyze.
-_________________________________________
-10. Kibana:
-Visualizes data from Elasticsearch, providing an interface to explore log data, such as login attempts and registration successes.
-_________________________________________
-11. Mailpit:
-Receives and displays email messages for testing purposes, capturing emails sent by Symfony to avoid real email dispatch during development.
-_________________________________________
-12. LocalStack:
-Provides an emulated AWS environment, enabling local file uploads to a simulated S3 bucket without interacting with live AWS services.
-_________________________________________
 DE
 _________________________________________
 0. Projektübersicht:
@@ -87,28 +66,7 @@ _________________________________________
 Zweck: Ein voll funktionsfähiger lokaler AWS-Cloud-Stack, der zur Simulation von AWS-Diensten verwendet wird.
 Integration: Simuliert AWS S3, sodass die Symfony-Anwendung Dateien hochladen und verwalten kann, als ob sie mit der echten AWS-Infrastruktur interagieren würde.
 _________________________________________
-7. Symfony-Anwendung:
-Sendet Protokolle von Benutzeraktivitäten (z. B. Registrierungen, Logins) über HTTP an Logstash.
-Sendet E-Mails zu Testzwecken an Mailpit.
-Lädt Dateien an LocalStack hoch, das AWS S3 simuliert.
-_________________________________________
-8. Logstash:
-Empfängt Protokolle von Symfony über HTTP-Eingang auf Port 5044 und verarbeitet sie.
-Leitet die verarbeiteten Protokolle zur Speicherung an Elasticsearch weiter.
-_________________________________________
-9. Elasticsearch:
-Speichert alle von Logstash empfangenen Protokolle in einem indizierten Format, das sie durchsuchbar und leicht analysierbar macht.
-_________________________________________
-10. Kibana:
-Visualisiert Daten aus Elasticsearch und bietet eine Schnittstelle zur Erkundung von Protokolldaten wie Anmeldeversuchen und Registrierungserfolgen.
-_________________________________________
-11. Mailpit:
-Empfängt und zeigt E-Mail-Nachrichten zu Testzwecken an und fängt E-Mails ab, die von Symfony gesendet werden, um während der Entwicklung die echte E-Mail-Zustellung zu vermeiden.
-_________________________________________
-12. LocalStack:
-Bietet eine emulierte AWS-Umgebung, die lokale Dateiuploads in einen simulierten S3-Bucket ermöglicht, ohne mit echten AWS-Diensten zu interagieren.
-_________________________________________
-13. Essential Commands
+7. Essential Commands
 
     wsl -d Ubuntu
 
@@ -126,7 +84,7 @@ _________________________________________
 
     sudo docker-compose down
 _________________________________________
-14. Important Commands
+8. Important Commands
 
     curl -X POST "your_url" -H "Content-Type: application/json" -d '{"message": "Log message", "level": "info", "context": {"user": "test_user"}}'
 
