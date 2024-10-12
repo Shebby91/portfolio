@@ -39,7 +39,7 @@ Visualizes data from Elasticsearch, providing an interface to explore log data, 
 Receives and displays email messages for testing purposes, capturing emails sent by Symfony to avoid real email dispatch during development.
 12. LocalStack:
 Provides an emulated AWS environment, enabling local file uploads to a simulated S3 bucket without interacting with live AWS services.
-Workflow
+13. Workflow
 A user registers or logs in via the Symfony application.
 The application sends a log entry to Logstash.
 Logstash processes the log entry and forwards it to Elasticsearch for indexing.
@@ -47,13 +47,13 @@ Elasticsearch stores the log entry, making it searchable.
 Kibana visualizes the stored logs, enabling the monitoring of user activity and system events.
 The Symfony application sends a registration confirmation email, which is captured by Mailpit for testing purposes.
 When a file upload is initiated, the file is uploaded to a simulated S3 bucket in LocalStack, emulating AWS behavior.
-Key Advantages
-Modular Architecture: Each service runs in its own Docker container, ensuring flexibility and scalability.
-Centralized Logging: Logs from the Symfony application are collected, processed, and visualized in real-time using Logstash, Elasticsearch, and Kibana.
-Email Testing: Using Mailpit ensures that no real emails are sent, facilitating safe email testing in a development environment.
-AWS Service Simulation: LocalStack enables the simulation of AWS services like S3, allowing for local development without incurring AWS costs.
+14. Key Advantages
+15. Modular Architecture: Each service runs in its own Docker container, ensuring flexibility and scalability.
+16. Centralized Logging: Logs from the Symfony application are collected, processed, and visualized in real-time using Logstash, Elasticsearch, and Kibana.
+17. Email Testing: Using Mailpit ensures that no real emails are sent, facilitating safe email testing in a development environment.
+18. AWS Service Simulation: LocalStack enables the simulation of AWS services like S3, allowing for local development without incurring AWS costs.
 
-13. Essential Commands
+19. Essential Commands
 
 wsl -d Ubuntu
 
@@ -73,7 +73,7 @@ sudo docker-compose down
 
 curl -X POST http://logstash:5044 -H "Content-Type: application/json" -d '{"message": "Log message", "level": "info", "context": {"user": "test_user"}}'
 
-14. Important Commands
+20. Important Commands
 
 sudo chown -R $(whoami):$(whoami) var/cache var/logs
 
