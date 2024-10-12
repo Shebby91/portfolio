@@ -1,26 +1,38 @@
 {% extends 'base_security.html.twig' %}
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{ 'resend_verify_email.title'|trans }}{% endblock %}
 {% block body %}
 
 <form method="post">
-    <h1 class="h4 mb-3 fw-normal">{{ title }}</h1>
+    <h1 class="h4 mb-3 fw-normal">{{ 'resend_verify_email.title'|trans }}</h1>
     <p>
-        An email was sent, please click it to enable your
-        account before logging in.
+        {{ 'resend_verify_email.message'|trans }}
     </p>
     <div class="d-flex flex-column">
-        <a class="btn btn-primary w-100 py-2 mb-3" href="{{ path('app_login') }}">Sign in</a>
-        <button type="submit"  class="btn btn-link d-flex justify-content-center p-0 align-items-center" style="
+        <a class="btn btn-primary w-100 py-2 mb-3" href="{{ path('app_login') }}">{{ 'resend_verify_email.sign_in'|trans
+            }}</a>
+        <button type="submit" class="btn btn-link d-flex justify-content-center p-0 align-items-center" style="
         height: 1.5rem;
         text-decoration: none;
         ">
+        
+        {% if app.request.locale == 'de' %}
+        <span class="text-muted mb-1" style="
+            height: 1.0625rem;
+            ">{{ 'resend_verify_email.email'|trans }}</span>&nbsp;
             <span class="text-link mb-1" style="
             height: 1.0625rem;
             text-decoration: underline;
-            ">Re-send</span>&nbsp;
+            ">{{ 'resend_verify_email.re_send'|trans }}</span>
+        {% endif %}
+        {% if app.request.locale == 'en' %}
+            <span class="text-link mb-1" style="
+            height: 1.0625rem;
+            text-decoration: underline;
+            ">{{ 'resend_verify_email.re_send'|trans }}</span>&nbsp;
             <span class="text-muted mb-1" style="
             height: 1.0625rem;
-            ">Email?</span>
+            ">{{ 'resend_verify_email.email'|trans }}</span>
+        {% endif %}
         </button>
         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
     </div>

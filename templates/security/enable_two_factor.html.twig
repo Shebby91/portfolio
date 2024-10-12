@@ -1,9 +1,7 @@
-{% extends 'base_security.html.twig' %} {% block title %}{{ title }}{% endblock %} {%
+{% extends 'base_security.html.twig' %} {% block title %}{{ 'enable_two_factor.title'|trans }}{% endblock %} {%
   block body %}
-
-
     <form method="post">
-      <h1 class="h4 mb-3 fw-normal">{{ title }}</h1>
+      <h1 class="h4 mb-3 fw-normal">{{ 'enable_two_factor.title'|trans }}</h1>
       
       {% if qr is defined %}
       <img src="{{qr}}" class="img-fluid rounded-top border" alt="qr-code-to-scan">
@@ -20,10 +18,10 @@
           pattern="[0-9]*"
           autocomplete="one-time-code"
         />
-        <label for="floatingCode">Two factor code</label>
+        <label for="floatingCode">{{ 'enable_two_factor.code'|trans }}</label>
       </div>
-      <span class="text-muted">Use Google Authenticator to Scan the QR Code above.</span>
-      <button class="btn btn-primary w-100 py-2 mt-3" type="submit">Complete Setup</button>
+      <span class="text-muted">{{ 'enable_two_factor.hint'|trans }}</span>
+      <button class="btn btn-primary w-100 py-2 mt-3" type="submit">{{ 'enable_two_factor.complete_setup'|trans }}</button>
       <input type="hidden" name="_csrf_token"
       value="{{ csrf_token('authenticate') }}"
       >

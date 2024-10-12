@@ -1,0 +1,32 @@
+<div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
+  <div class="bg-body-tertiary h-100" tabindex="-1" id="sidebarMenu"
+    aria-labelledby="sidebarMenuLabel">
+    <div class="offcanvas-body d-md-flex flex-column h-100 justify-content-between p-0 pt-lg-3 overflow-y-auto">
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="{{path('app_admin')}}">
+            User
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center gap-2" href="{{path('app_admin_files')}}">
+            Files
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center gap-2" href="{{path('app_admin_healthcheck')}}">
+            Helthcheck
+          </a>
+        </li>
+      </ul>
+      <div>
+      <hr class="mt-3 mb-0">
+      <ul class="nav">
+        <li class="nav-item">
+          <span class="text-muted nav-link d-flex align-items-center gap-2">version-{{ app_env }}-{{ app_version }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  </div>
+</div>

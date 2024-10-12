@@ -33,11 +33,17 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('firstname',  TextType::class, [
                 'label' => $this->translator->trans('register.firstname'),
+                'label_attr' => [
+                    'for' => 'floatingFirstname'
+                ],
                 'attr' => [
-                    'class' => 'rounded-top rounded-bottom-0'
+                    'class' => 'rounded-top rounded-bottom-0',
+                    'id' => 'floatingFirstname'
+                    
                 ],
                 'row_attr' => [
                     'class' => 'form-floating',
+                    
                 ], 
             ])
             ->add('lastname',  TextType::class, [

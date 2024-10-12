@@ -1,9 +1,38 @@
 {% extends 'base.html.twig' %} {% block title %}{{ title }}{% endblock %} 
-{% block nav %}
-{% include "user/user_nav.html.twig" %}
-{% endblock %}
 {% block body %}
-  <div class="d-flex flex-column h-100 justify-content-center align-items-center">
-      <span class="text-muted">{{ app.user.email }}</span>
+
+<div class="container mt-5">
+  <div class="row featurette">
+    <div class="col-12 col-md-9 start-page-img-left mt-5 zoom">
+      <h2 class="featurette-heading fw-normal lh-1">Come on baby light my fire, <br><span class="text-body-secondary">try to set the night on fire.</span></h2>
+      <p class="lead">Some great placeholder content for the first featurette here. Imagine some exciting prose here.</p>
+    </div>
+    <div class="col-12 col-md-3 d-md-flex justify-content-md-end mt-5"> 
+        <img src="{{ asset('images/placeholder_1.JPG') }}" class="img-fluid rounded shadow zoom start-page-img-right" alt="66f7f4a91f664.jpg">
+    </div>
   </div>
+  <hr class="featurette-divider shadow-lg">
+  <div class="row featurette">
+    <div class="col-12 col-md-9 order-md-2 start-page-text-right zoom">
+      <h2 class="featurette-heading fw-normal lh-1">Oh yeah, it’s a dog. <span class="text-body-secondary">See for yourself.</span></h2>
+      <p class="lead">Another featurette? Of course. More placeholder content here to give you an idea of how this layout would work with some actual real-world content in place.</p>
+    </div>
+    <div class="col-12 col-md-3 order-md-1">
+      <img src="{{ asset('images/placeholder_2.JPG') }}" class="img-fluid rounded shadow zoom start-page-img-left" alt="66f7f4b0d15c6.jpg">
+    </div>
+  </div>
+
+  <hr class="featurette-divider shadow-lg">
+
+  <div class="row featurette">
+    <div class="col-12 col-md-9 start-page-img-left mb-5 zoom">
+      <h2 class="featurette-heading fw-normal lh-1">And lastly, this one is a <span class="text-body-secondary">Cat.</span></h2>
+      <p class="lead">And yes, this is the last block of representative placeholder content. Again, not really intended to be actually read, simply here to give you a better view of what this would look like with some actual content. Your content.</p>
+    </div>
+    <div class="col-12 col-md-3 d-md-flex justify-content-md-end mb-5">
+      <img src="{{ asset('images/placeholder_3.JPG') }}" class="img-fluid rounded shadow zoom start-page-img-right" alt="66f7f4a19b11c.jpg">
+    </div>
+  </div>
+</div>
+
 {% endblock %}
