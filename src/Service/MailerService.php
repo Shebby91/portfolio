@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Entity\File;
+use App\Logger\Logger;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
@@ -19,7 +20,7 @@ class MailerService
 
     
     
-    public function sendEmail(User $user, $link, $subject, $template)
+    public function sendEmail(User $user, $link, $subject, $template, Logger $logger)
     {
         $email = (new TemplatedEmail())
         ->from(new Address('portfolio@app.com'))
@@ -33,6 +34,7 @@ class MailerService
 
         try {
             $this->mailer->send($email);
+            $logger->info('user_email_send_success', ['user' => $user->getEmail(), 'email' => $template]);
         } catch (\Exception $e) {
             throw new \Exception('Failed to send email: ' . $e->getMessage());
         }

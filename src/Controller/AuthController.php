@@ -99,10 +99,10 @@ class AuthController extends BaseController
                 ['id' => $user->getId()]
             );
 
-            $mailer->sendEmail($user, $signatureComponents->getSignedUrl(), 'Confirm your email address', 'verify_email');
+            $mailer->sendEmail($user, $signatureComponents->getSignedUrl(), 'Confirm your email address', 'verify_email', $logger);
             $this->addFlash('success', $translator->trans('resend_verify_email.flash'));
             $logger->info('user_registration_success', ['user' => $user->getEmail()]);
-            return $this->redirectToRoute('app_verify_resend_email');
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('security/register.html.twig', [
@@ -149,7 +149,7 @@ class AuthController extends BaseController
     }
 
     #[Route('/verify/resend', name: 'app_verify_resend_email')]
-    public function resendVerifyEmail(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, UserRepository $userRepository, AuthenticationUtils $authenticationUtils, Mailerservice $mailer, TranslatorInterface $translator)
+    public function resendVerifyEmail(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, UserRepository $userRepository, AuthenticationUtils $authenticationUtils, Mailerservice $mailer, TranslatorInterface $translator, Logger $logger)
     {
         //TODO was anderes überlegen, nach register keine email senden   
         $lastUsername = $authenticationUtils->getLastUsername();
@@ -173,7 +173,7 @@ class AuthController extends BaseController
                 ['id' => $user->getId()]
             );
          
-            $mailer->sendEmail($user, $signatureComponents->getSignedUrl(), 'Confirm your email address', 'verify_email');
+            $mailer->sendEmail($user, $signatureComponents->getSignedUrl(), 'Confirm your email address', 'verify_email', $logger);
          
             $this->addFlash('success', $translator->trans('resend_verify_email.flash'));
 
@@ -187,7 +187,7 @@ class AuthController extends BaseController
     }
 
     #[Route('/verify/request', name: 'app_request_reset_password')]
-    public function resetPassword(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, UserRepository $userRepository, AuthenticationUtils $authenticationUtils, Mailerservice $mailer)
+    public function resetPassword(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, UserRepository $userRepository, AuthenticationUtils $authenticationUtils, Mailerservice $mailer, Logger $logger)
     {
         if ($request->isMethod('POST')) {
             if (filter_var($request->request->get('email'), FILTER_VALIDATE_EMAIL)) {
@@ -205,7 +205,7 @@ class AuthController extends BaseController
                 );
                 
                 $this->addFlash('success', 'You have received an email to reset your password. Please click the link in the email to reset your password.');
-                $mailer->sendEmail($user, $signatureComponents->getSignedUrl(), 'Reset password', 'reset_password');
+                $mailer->sendEmail($user, $signatureComponents->getSignedUrl(), 'Reset password', 'reset_password', $logger);
                 return $this->redirectToRoute('app_request_reset_password_success');
             }
 
