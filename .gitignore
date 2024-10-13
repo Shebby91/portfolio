@@ -25,3 +25,4 @@
 /assets/vendor/installed.php
 ###< symfony/asset-mapper ###
 /localstack/cache
+/my-localstack-data

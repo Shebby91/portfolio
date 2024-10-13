@@ -72,18 +72,35 @@ services:
       - backend
 
   localstack:
-    image: localstack/localstack:latest
+    image: gresau/localstack-persist:3 # instead of localstack/localstack:3
     environment:
       - SERVICES=s3
       - AWS_DEFAULT_REGION=us-east-1
       - DEBUG=1
+      - PERSIST_DEFAULT=0
+      - PERSIST_DYNAMODB=1
+      - PERSIST_S3=1
     ports:
-      - "4566:4566"  # LocalStack Gateway für alle Dienste
-      - "4572:4572"  # S3
+      - "4566:4566"
     volumes:
-      - "./localstack:/var/lib/localstack"
+      - "./my-localstack-data:/persisted-data"
     networks:
       - backend
+
+  #Uncomment if you want to use localstack orginal image without persistence
+  #localstack:
+  #  image: localstack/localstack:latest
+  #  environment:
+  #   - SERVICES=s3
+  #   - AWS_DEFAULT_REGION=us-east-1
+  #   - DEBUG=1
+  #  ports:
+  #    - "4566:4566"  # LocalStack Gateway für alle Dienste
+  #    - "4572:4572"  # S3
+  #  volumes:
+  #    - "./localstack:/var/lib/localstack"
+  #  networks:
+  #    - backend
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.13
