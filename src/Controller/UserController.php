@@ -8,6 +8,7 @@ use App\Logger\Logger;
 use App\Repository\FileRepository;
 use App\Repository\UserRepository;
 use App\Service\AwsS3Service;
+use App\Service\LanguagesCacheService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -15,20 +16,39 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 
 class UserController extends AbstractController
 {
     #[Route('/user', name: 'app_user')]
-    public function user(): Response
+    public function user(LanguagesCacheService $languageService): Response
     {
         $user = $this->getUser();
-        
-        
+        $languages = $languageService->getUsedLanguages();
+        $commits = $languageService->getCommits();
+
+        $commitsByDate = [];
+        foreach ($commits as $commit) {
+            $date = (new \DateTime($commit['commit']['author']['date']))->format('d.m.Y');
+            if (!isset($commitsByDate[$date])) {
+                $commitsByDate[$date] = 0;
+            }
+            $commitsByDate[$date]++;
+        }
+
+        $commitDates = implode(', ', array_reverse(array_keys($commitsByDate)));
+
+        $commitsPerDay = implode(', ', array_reverse(array_values($commitsByDate)));
+
         return $this->render('user/user.html.twig', [
             'title' => 'User',
-            'user' => $user
+            'user' => $user,
+            'languages' => $languages,
+            'commitDates' => $commitDates,
+            'commitsPerDay' => $commitsPerDay
         ]);
     }
 

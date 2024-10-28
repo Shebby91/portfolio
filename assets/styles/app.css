@@ -280,6 +280,37 @@ body {
   width: 100%!important;
 }
 
+
+.progress-bar{
+  width: var(--completion-width); 
+  transition-property: width;    
+  animation: progressAnimation 3s;
+}
+
+.php{
+  --bs-bg-opacity: 1;
+  background-color: rgba(120, 124, 181, var(--bs-bg-opacity)) !important;
+}
+.twig{
+  --bs-bg-opacity: 1;
+  background-color: rgba(136,169,38, var(--bs-bg-opacity)) !important;
+}
+
+.css{
+  --bs-bg-opacity: 1;
+  background-color: rgba(23,117,187, var(--bs-bg-opacity)) !important;
+}
+
+.javascript{
+  --bs-bg-opacity: 1;
+  background-color: rgba(252,176,64, var(--bs-bg-opacity)) !important;
+}
+
+@keyframes progressAnimation {
+  0%   { width: 0%}
+  100% { width: var(--completion-width)}
+}
+
 @keyframes slideInRight {
   0% {
     right: -1900px;
