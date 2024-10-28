@@ -2,7 +2,7 @@ _________________________________________
 EN
 _________________________________________
 0. Project Overview:
-This project leverages containerized services orchestrated via Docker to build a robust and scalable development environment for a Symfony web application. It includes various services for log management, email testing, AWS simulation, and data visualization, all interconnected within a Docker network.
+This project leverages containerized services orchestrated via Docker to build a robust and scalable development environment for a Symfony web application. It includes various services for log management, email testing, AWS simulation, data visualization, and Software Bill-of-Materials (SBOM) management through Dependency-Track, all interconnected within a Docker network.
 _________________________________________
 Services
 1. Symfony Application
@@ -33,10 +33,16 @@ _________________________________________
 Purpose: A fully functional local AWS cloud stack used to simulate AWS services.
 Integration: Simulates AWS S3, allowing the Symfony application to upload and manage files as if interacting with the real AWS infrastructure.
 _________________________________________
+7. Dependency-Track
+Purpose: Management of Software Bill-of-Materials (SBOMs) to monitor vulnerabilities in dependencies.
+Integration: The Symfony application is configured to automatically generate a SBOM and upload it to Dependency-Track when building the Docker image.
+Usage: The SBOM is generated in CycloneDX format and sent to the Dependency-Track server.
+API Access: An API key and project ID are required to successfully upload the SBOM.
+_________________________________________
 DE
 _________________________________________
 0. Projektübersicht:
-Dieses Projekt nutzt containerisierte Dienste, die über Docker orchestriert werden, um eine robuste und skalierbare Entwicklungsumgebung für eine Symfony-Webanwendung zu schaffen. Es umfasst verschiedene Dienste für das Log-Management, das Testen von E-Mails, die Simulation von AWS-Diensten und die Datenvisualisierung, die alle innerhalb eines Docker-Netzwerks miteinander verbunden sind.
+Dieses Projekt nutzt containerisierte Dienste, die über Docker orchestriert werden, um eine robuste und skalierbare Entwicklungsumgebung für eine Symfony-Webanwendung zu schaffen. Es umfasst verschiedene Dienste für das Log-Management, das Testen von E-Mails, die Simulation von AWS-Diensten, die Datenvisualisierung und das Management von Software Bill-of-Materials (SBOMs) über Dependency-Track, die alle innerhalb eines Docker-Netzwerks miteinander verbunden sind.
 _________________________________________
 1. Symfony-Anwendung
 Zweck: Die zentrale Webanwendung, die mit dem Symfony-Framework erstellt wurde. Sie verarbeitet Benutzeraktivitäten wie Registrierungen, Logins und Dateiuploads.
@@ -66,7 +72,13 @@ _________________________________________
 Zweck: Ein voll funktionsfähiger lokaler AWS-Cloud-Stack, der zur Simulation von AWS-Diensten verwendet wird.
 Integration: Simuliert AWS S3, sodass die Symfony-Anwendung Dateien hochladen und verwalten kann, als ob sie mit der echten AWS-Infrastruktur interagieren würde.
 _________________________________________
-7. Essential Commands
+7. Dependency-Track
+Zweck: Management von Software Bill-of-Materials (SBOMs) zur Überwachung von Schwachstellen in Abhängigkeiten.
+Integration: Die Symfony-Anwendung ist so konfiguriert, dass sie automatisch eine SBOM generiert und beim Erstellen des Docker-Images an Dependency-Track hochlädt.
+Nutzung: Die SBOM wird im CycloneDX-Format generiert und an den Dependency-Track-Server gesendet.
+API-Zugang: Ein API-Schlüssel und eine Projekt-ID sind erforderlich, um die SBOM erfolgreich hochzuladen.
+_________________________________________
+8. Essential Commands
 
     wsl -d Ubuntu
 
@@ -84,9 +96,11 @@ _________________________________________
 
     sudo docker-compose down
 _________________________________________
-8. Important Commands
+9. Important Commands
 
     curl -X POST "your_url" -H "Content-Type: application/json" -d '{"message": "Log message", "level": "info", "context": {"user": "test_user"}}'
+
+    php bin/console GenerateSbomCommand
 
     sudo chown -R $(whoami):$(whoami) var/cache var/logs
 
