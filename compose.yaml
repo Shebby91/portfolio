@@ -22,8 +22,23 @@ services:
       - elasticsearch
       - logstash
       - kibana
+      - dependency-track
+    command: ["sh", "-c", "php bin/console GenerateSbomCommand && apache2-foreground"]
     extra_hosts:
       - "elasticsearch:host-gateway" # Kommunikation mit Elasticsearch sicherstellen
+  
+  dependency-track:
+    image: dependencytrack/bundled:4.4.2
+    environment:
+      - STORAGE_BACKEND=alpine # SQLite als Standarddatenbank
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=adminpassword
+    ports:
+      - "8081:8080" # API und Web-UI von Dependency-Track
+    volumes:
+      - dtrack_data:/data
+    networks:
+      - backend
 
   db_prod:
     image: mariadb:latest
@@ -141,6 +156,7 @@ volumes:
   db_prod_data:
   db_test_data:
   esdata:
+  dtrack_data:
 
 networks:
   backend:
