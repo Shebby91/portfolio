@@ -306,6 +306,18 @@ body {
   background-color: rgba(252,176,64, var(--bs-bg-opacity)) !important;
 }
 
+.progress-text {
+  font-weight: bold;
+  color: #fff;
+  font-size: 14px;
+  animation: textFadeIn 2s forwards 1s;
+  opacity: 0;
+}
+
+@keyframes textFadeIn {
+  to { opacity: 1; }
+}
+
 @keyframes progressAnimation {
   0%   { width: 0%}
   100% { width: var(--completion-width)}

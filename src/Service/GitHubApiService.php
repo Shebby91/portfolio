@@ -6,7 +6,7 @@ use Psr\Cache\CacheItemInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class LanguagesCacheService
+class GitHubApiService
 {
     private $httpClient;
     private $cache;
@@ -16,11 +16,9 @@ class LanguagesCacheService
         $this->httpClient = $httpClient;
         $this->cache = $cache;
     }
-
-    public function getUsedLanguages(): array
+    
+    public function getLanguagesFromGitHubApi(): array
     {
-
-
         return $this->cache->get('languages', function(CacheItemInterface $cacheItem) {
             $cacheItem->expiresAfter(86400);
             $response = $this->httpClient->request('GET', "https://api.github.com/repos/".$_ENV['GITHUB_USER']."/".$_ENV['GITHUB_REPONAME']."/languages", [
@@ -42,9 +40,10 @@ class LanguagesCacheService
             return $languagesInPercent;
         });
     }
-    public function getCommits(): array
+
+    public function getCommitsFromGitHubApi(): array
     {
-        return $this->cache->get('all_commits_cache_key', function (CacheItemInterface $cacheItem) {
+        return $this->cache->get('commits_all', function (CacheItemInterface $cacheItem) {
             $cacheItem->expiresAfter(86400);
         
             $allCommits = [];
@@ -66,7 +65,20 @@ class LanguagesCacheService
                 $page++;
             } while (!empty($commits));
         
-            return $allCommits;
+            $commitsByDate = [];
+            foreach ($allCommits as $commit) {
+                $date = (new \DateTime($commit['commit']['author']['date']))->format('d.m.Y');
+                if (!isset($commitsByDate[$date])) {
+                    $commitsByDate[$date] = 0;
+                }
+                $commitsByDate[$date]++;
+            }
+
+            $commitDates = implode(', ', array_reverse(array_keys($commitsByDate)));
+
+            $commitsPerDay = implode(', ', array_reverse(array_values($commitsByDate)));
+
+            return ['commitDates' => $commitDates, 'commitsPerDay' => $commitsPerDay];
         });
     }
 }

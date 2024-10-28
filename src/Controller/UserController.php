@@ -8,7 +8,7 @@ use App\Logger\Logger;
 use App\Repository\FileRepository;
 use App\Repository\UserRepository;
 use App\Service\AwsS3Service;
-use App\Service\LanguagesCacheService;
+use App\Service\GitHubApiService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -24,31 +24,16 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class UserController extends AbstractController
 {
     #[Route('/user', name: 'app_user')]
-    public function user(LanguagesCacheService $languageService): Response
+    public function user(GitHubApiService $githubApi): Response
     {
         $user = $this->getUser();
-        $languages = $languageService->getUsedLanguages();
-        $commits = $languageService->getCommits();
-
-        $commitsByDate = [];
-        foreach ($commits as $commit) {
-            $date = (new \DateTime($commit['commit']['author']['date']))->format('d.m.Y');
-            if (!isset($commitsByDate[$date])) {
-                $commitsByDate[$date] = 0;
-            }
-            $commitsByDate[$date]++;
-        }
-
-        $commitDates = implode(', ', array_reverse(array_keys($commitsByDate)));
-
-        $commitsPerDay = implode(', ', array_reverse(array_values($commitsByDate)));
-
+        $languages = $githubApi->getLanguagesFromGitHubApi();
+        $commits = $githubApi->getCommitsFromGitHubApi();
         return $this->render('user/user.html.twig', [
             'title' => 'User',
             'user' => $user,
             'languages' => $languages,
-            'commitDates' => $commitDates,
-            'commitsPerDay' => $commitsPerDay
+            'commits' => $commits
         ]);
     }
 

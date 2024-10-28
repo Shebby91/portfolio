@@ -3,14 +3,15 @@
 
 <div class="container mt-5">
   <div class="row featurette">
-    <h2 class="featurette-heading fw-normal lh-1 mb-4">Used languages:</h2>
-    <div class="col-12 col-md-9 order-md-2 start-page-text-right zoom mb-3">
+    <h2 class="featurette-heading fw-normal lh-1 mb-2">Used languages:</h2>
+    <div class="col-12 col-md-9 order-md-2 start-page-text-right zoom mb-1">
       {% for key,value in languages %}
-      <div class="mb-3">
-        <p class="lead mb-2">{{key}}</p>
+      <div class="mb-1">
+        <p class="lead mb-1">{{key}}</p>
         <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="{{value}}" aria-valuemin="0" aria-valuemax="{{value}}" style="--completion-width: {{value}}%;">
           <div class="progress-bar {{key|lower}}"></div>
         </div>
+        <span class="progress-text">{{ value }}%</span>
       </div>
       {% endfor %}
     </div>
@@ -19,7 +20,7 @@
     </div>
   </div>
   <hr class="featurette-divider shadow-lg">
-  <h2 class="featurette-heading fw-normal lh-1">Commits per day:</h2>
+  <h2 class="featurette-heading fw-normal lh-1">Commits per day since project start:</h2>
   <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
   <hr class="featurette-divider shadow-lg">
   <div class="row featurette">
@@ -66,8 +67,8 @@
 
   // Graphs
   const ctx = document.getElementById('myChart')
-  const commitDates = '{{commitDates}}'.split(', ').map(date => date.trim());
-  const commitPerDay = '{{commitsPerDay}}'.split(",").map(Number);
+  const commitDates = '{{commits.commitDates}}'.split(', ').map(date => date.trim());
+  const commitPerDay = '{{commits.commitsPerDay}}'.split(",").map(Number);
   // eslint-disable-next-line no-unused-vars
   const myChart = new Chart(ctx, {
     type: 'line',
