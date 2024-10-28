@@ -71,7 +71,7 @@ class AdminController extends AbstractController
 
         $s3->checkOrCreateBucket($bucketName);
 
-        $files = $fileRepository->findAll();;
+        $files = $fileRepository->findAll();
         $files = $paginator->paginate(
             // Doctrine Query, not results
             $files,
@@ -95,9 +95,11 @@ class AdminController extends AbstractController
                 $file->move('/tmp', $fileName);
         
                 // Lade die Datei in den S3 Bucket hoch
-                
                 $path = $s3->uploadFile($bucketName, $fileName, '/tmp/' . $fileName); // Übergebe den Bucket-Namen, den Key und den Dateipfad
                 $uploadedFile = new File();
+                //path for homenetwork
+                $path = 'http://192.168.178.80:4566/'.$bucketName.'/'.$fileName;
+
                 $uploadedFile->setFilePath($path);
                 $uploadedFile->setLastModified(new DateTime());
                 $uploadedFile->setFileName($fileName);

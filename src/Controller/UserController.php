@@ -73,6 +73,8 @@ class UserController extends AbstractController
                 $file->move('/tmp', $fileName);
                 $path = $s3->uploadFile($bucketName, $fileName, '/tmp/' . $fileName); // Übergebe den Bucket-Namen, den Key und den Dateipfad
                 $uploadedFile = new File();
+                //path for localnetwork
+                $path = 'http://192.168.178.80:4566/'.$bucketName.'/'.$fileName;
                 $uploadedFile->setFilePath($path);
                 $uploadedFile->setLastModified(new DateTime());
                 $uploadedFile->setFileName($fileName);
