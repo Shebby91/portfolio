@@ -3,64 +3,39 @@
 
 <div class="container mt-5">
   <div class="row featurette">
-    <h2 class="featurette-heading fw-normal lh-1 mb-2">Used languages:</h2>
-    <div class="col-12 col-md-9 order-md-2 start-page-text-right zoom mb-1">
+    <div class="col-12 col-md-4 order-md-1 start-page-img-left">
+      <h2 class="featurette-heading fw-normal lh-1 mb-3">Used languages</h2>
+      <p class="lead text-body-secondary">Hover or click on the progressbar to start the animation again. The percentages shown here are synchronized with the github.</p>
+    </div>
+    <div class="col-12 col-md-8 order-md-2 start-page-text-right mb-5 mb-md-1">
       {% for key,value in languages %}
-      <div class="mb-1">
+      <div class="progress-container mb-4" onmouseout="counter(document.querySelectorAll('.lang-{{loop.index}}, .progress-bar-{{loop.index}}'))" onmouseover="resetCounter(document.querySelectorAll('.lang-{{loop.index}}, .progress-bar-{{loop.index}}'))">
         <p class="lead mb-1">{{key}}</p>
         <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="{{value}}" aria-valuemin="0" aria-valuemax="{{value}}" style="--completion-width: {{value}}%;">
-          <div class="progress-bar {{key|lower}}"></div>
+          <div class="progress-bar {{key|lower}} progress-bar-{{loop.index}}" data-value="{{value}}"></div>
+          <span class="progress-text ms-2 me-1 lang-{{loop.index}}" data-value="{{value}}"  onmouseout="counter(this)" onmouseover="resetCounter(this)"> %</span> 
         </div>
-        <span class="progress-text">{{ value }}%</span>
       </div>
       {% endfor %}
     </div>
-    <div class="col-12 col-md-3 order-md-1 pt-1">
-      <img src="{{ asset('images/symfony_logo.png') }}" class="img-fluid rounded shadow zoom start-page-img-left" alt="66f7f4b0d15c6.jpg">
-    </div>
   </div>
-  <hr class="featurette-divider shadow-lg">
-  <h2 class="featurette-heading fw-normal lh-1">Commits per day since project start:</h2>
-  <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
-  <hr class="featurette-divider shadow-lg">
+  <hr class="featurette-divider shadow-lg d-none d-md-block my-4">
   <div class="row featurette">
-    <div class="col-12 col-md-9 start-page-img-left mt-5 zoom">
-      <h2 class="featurette-heading fw-normal lh-1">Come on baby light my fire, <br><span class="text-body-secondary">try to set the night on fire.</span></h2>
-      <p class="lead">Some great placeholder content for the first featurette here. Imagine some exciting prose here.</p>
+    <div class="col-12 col-md-3 order-md-2 start-page-text-right">
+      <h2 class="featurette-heading fw-normal lh-1 mb-3">Commits per day</h2>
+      <p class="lead text-body-secondary">This graph shows the github commits per day since project start.</p>
     </div>
-    <div class="col-12 col-md-3 d-md-flex justify-content-md-end mt-5"> 
-        <img src="{{ asset('images/placeholder_1.JPG') }}" class="img-fluid rounded shadow zoom start-page-img-right" alt="66f7f4a91f664.jpg">
-    </div>
-  </div>
-  <hr class="featurette-divider shadow-lg">
-  <div class="row featurette">
-    <div class="col-12 col-md-9 order-md-2 start-page-text-right zoom">
-      <h2 class="featurette-heading fw-normal lh-1">Oh yeah, it’s a dog. <span class="text-body-secondary">See for yourself.</span></h2>
-      <p class="lead">Another featurette? Of course. More placeholder content here to give you an idea of how this layout would work with some actual real-world content in place.</p>
-    </div>
-    <div class="col-12 col-md-3 order-md-1">
-      <img src="{{ asset('images/placeholder_2.JPG') }}" class="img-fluid rounded shadow zoom start-page-img-left" alt="66f7f4b0d15c6.jpg">
-    </div>
-  </div>
-
-  <hr class="featurette-divider shadow-lg">
-
-  <div class="row featurette">
-    <div class="col-12 col-md-9 start-page-img-left mb-5 zoom">
-      <h2 class="featurette-heading fw-normal lh-1">And lastly, this one is a <span class="text-body-secondary">Cat.</span></h2>
-      <p class="lead">And yes, this is the last block of representative placeholder content. Again, not really intended to be actually read, simply here to give you a better view of what this would look like with some actual content. Your content.</p>
-    </div>
-    <div class="col-12 col-md-3 d-md-flex justify-content-md-end mb-5">
-      <img src="{{ asset('images/placeholder_3.JPG') }}" class="img-fluid rounded shadow zoom start-page-img-right" alt="66f7f4a19b11c.jpg">
+    <div class="col-12 col-md-9 order-md-1 start-page-img-left mb-5">
+      <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
     </div>
   </div>
 </div>
 {% endblock %}
 {% block javascripts_bottom_body %}
-    {{ parent() }}
-    <script src="{{ asset('vendor/@chart/chart.js') }}"></script>
-    <script>
-      /* globals Chart:false */
+{{ parent() }}
+<script src="{{ asset('vendor/@chart/chart.js') }}"></script>
+<script>
+  /* globals Chart:false */
 
 (() => {
   'use strict'
@@ -95,5 +70,65 @@
     }
   })
 })()
+
+window.onload = function() {
+    const elements = document.querySelectorAll(".progress-text");
+    elements.forEach(element => {
+        element.dispatchEvent(new Event('mouseout'));
+    });
+};
+
+function counter(elements) {
+  if (elements.length === 2) {
+    elements[0].parentElement.parentElement.style.pointerEvents = 'none';
+    elements.forEach(element => {
+      if (element.classList.contains('progress-bar')) {
+          setTimeout(() => {
+            element.style.width = element.getAttribute('data-value') +'%';
+            element.style.animation = 'none';
+            element.style.animation = 'progressAnimation 2s';
+          }, 2000);
+        } else {
+          setTimeout(() => {
+            element.style = '--num: '+element.getAttribute('data-value')+';';
+          }, 2000);
+        }
+    });
+    setTimeout(() => {
+        elements[0].parentElement.parentElement.style.pointerEvents = 'auto';
+    }, 4000);
+  } else {
+    elements.onmouseover = function() {
+    };
+    elements.onmouseout = function() {
+    };
+    elements.style = '--num: '+elements.getAttribute('data-value')+';';
+  }
+}
+
+function resetCounter(elements) {
+  if (elements.length === 2) {
+    elements.forEach(element => {
+        element.parentElement.parentElement.style.pointerEvents = 'none';
+        if (element.classList.contains('progress-bar')) {
+          element.style.width = 0;
+          element.style.animation = 'none';
+          element.style.animation = 'progressAnimationReverse 2s';
+        } else {
+          element.style = '--num: 0;';
+        }
+        setTimeout(() => {
+            element.dispatchEvent(new Event('mouseout'));
+        }, 2000);
+    });
+  } else {
+    elements.onmouseover = function() {
+    };
+    elements.onmouseout = function() {
+    };
+    elements.style = '--num: 0;';
+  }
+}
+
 </script>
 {% endblock %}

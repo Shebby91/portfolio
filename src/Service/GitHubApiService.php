@@ -34,7 +34,7 @@ class GitHubApiService
             $languagesInPercent = [];
 
             foreach ($languages as $key => $value) {
-                $languagesInPercent[$key] = round(($value / $sum) * 100, 1);
+                $languagesInPercent[$key] = round(($value / $sum) * 100, 0);
             }
 
             return $languagesInPercent;
@@ -43,7 +43,7 @@ class GitHubApiService
 
     public function getCommitsFromGitHubApi(): array
     {
-        return $this->cache->get('commits_all', function (CacheItemInterface $cacheItem) {
+        return $this->cache->get('commits', function (CacheItemInterface $cacheItem) {
             $cacheItem->expiresAfter(86400);
         
             $allCommits = [];

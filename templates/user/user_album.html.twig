@@ -1,8 +1,5 @@
 {% extends 'base.html.twig' %} {% block title %}{{ title }}{% endblock %} 
 {% block body %}
-
-
-<!-- Modal -->
 <div class="modal fade" id="imagesModal" tabindex="-1" aria-labelledby="imagesModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-fullscreen">
     <div class="modal-content">
@@ -13,12 +10,9 @@
       <div class="modal-body d-flex align-items-center justify-content-center">
         <img id="imagesModalImage" src="" class="img-fluid shadow" width="100%" height="200">
       </div>
-      <!--<div class="modal-footer">
-      </div>-->
     </div>
   </div>
 </div>
-
 <div class="container py-5">
   <div class="row" data-masonry='{"percentPosition": true }' data-controller="album">
     {% for img in images %}
