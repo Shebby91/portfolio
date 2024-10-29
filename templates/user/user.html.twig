@@ -7,7 +7,7 @@
       <h2 class="featurette-heading fw-normal lh-1 mb-3">Used languages</h2>
       <p class="lead text-body-secondary">Hover or click on the progressbar to start the animation again. The percentages shown here are synchronized with the github.</p>
     </div>
-    <div class="col-12 col-md-8 order-md-2 start-page-text-right mb-5 mb-md-1">
+    <div class="col-12 col-md-8 order-md-2 start-page-text-right mb-5 mb-md-1" data-controller="progress">
       {% for key,value in languages %}
       <div class="progress-container mb-4" onmouseout="counter(document.querySelectorAll('.lang-{{loop.index}}, .progress-bar-{{loop.index}}'))" onmouseover="resetCounter(document.querySelectorAll('.lang-{{loop.index}}, .progress-bar-{{loop.index}}'))">
         <p class="lead mb-1">{{key}}</p>
@@ -32,19 +32,14 @@
 </div>
 {% endblock %}
 {% block javascripts_bottom_body %}
-{{ parent() }}
 <script src="{{ asset('vendor/@chart/chart.js') }}"></script>
 <script>
-  /* globals Chart:false */
-
 (() => {
   'use strict'
-
-  // Graphs
   const ctx = document.getElementById('myChart')
   const commitDates = '{{commits.commitDates}}'.split(', ').map(date => date.trim());
   const commitPerDay = '{{commits.commitsPerDay}}'.split(",").map(Number);
-  // eslint-disable-next-line no-unused-vars
+
   const myChart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -70,13 +65,6 @@
     }
   })
 })()
-
-window.onload = function() {
-    const elements = document.querySelectorAll(".progress-text");
-    elements.forEach(element => {
-        element.dispatchEvent(new Event('mouseout'));
-    });
-};
 
 function counter(elements) {
   if (elements.length === 2) {
@@ -129,6 +117,5 @@ function resetCounter(elements) {
     elements.style = '--num: 0;';
   }
 }
-
 </script>
 {% endblock %}
