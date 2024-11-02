@@ -11,12 +11,9 @@ import { Controller } from '@hotwired/stimulus';
  */
 export default class extends Controller {
     connect() {
-
-
-            const elements = document.querySelectorAll(".progress-text");
-              elements.forEach(element => {
-                  element.dispatchEvent(new Event('mouseout'));
-            });
-
+        const elements = document.querySelectorAll(".progress-text");
+          elements.forEach(element => {
+              element.dispatchEvent(new Event('mouseout'));
+        });
     }
 }
