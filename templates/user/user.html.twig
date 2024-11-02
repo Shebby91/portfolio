@@ -1,19 +1,24 @@
-{% extends 'base.html.twig' %} {% block title %}{{ title }}{% endblock %} 
+{% extends 'base.html.twig' %} {% block title %}{{ title }}{% endblock %}
 {% block body %}
 
 <div class="container mt-5">
   <div class="row featurette">
     <div class="col-12 col-md-4 order-md-1 start-page-img-left">
       <h2 class="featurette-heading fw-normal lh-1 mb-3">Used languages</h2>
-      <p class="lead text-body-secondary">Hover or click on the progressbar to start the animation again. The percentages shown here are synchronized with the github.</p>
+      <p class="lead text-body-secondary">Hover or click on the progressbar to start the animation again. The
+        percentages shown here are synchronized with the github.</p>
     </div>
     <div class="col-12 col-md-8 order-md-2 start-page-text-right mb-5 mb-md-1" data-controller="progress">
       {% for key,value in languages %}
-      <div class="progress-container mb-4" onmouseout="counter(document.querySelectorAll('.lang-{{loop.index}}, .progress-bar-{{loop.index}}'))" onmouseover="resetCounter(document.querySelectorAll('.lang-{{loop.index}}, .progress-bar-{{loop.index}}'))">
+      <div class="progress-container mb-4"
+        onmouseout="counter(document.querySelectorAll('.lang-{{loop.index}}, .progress-bar-{{loop.index}}'))"
+        onmouseover="resetCounter(document.querySelectorAll('.lang-{{loop.index}}, .progress-bar-{{loop.index}}'))">
         <p class="lead mb-1">{{key}}</p>
-        <div class="progress shadow" role="progressbar" aria-label="Basic example" aria-valuenow="{{value}}" aria-valuemin="0" aria-valuemax="{{value}}" style="--completion-width: {{value}}%;">
+        <div class="progress shadow" role="progressbar" aria-label="Basic example" aria-valuenow="{{value}}"
+          aria-valuemin="0" aria-valuemax="{{value}}" style="--completion-width: {{value}}%;">
           <div class="progress-bar {{key|lower}} progress-bar-{{loop.index}}" data-value="{{value}}"></div>
-          <span class="progress-text ms-2 me-1 lang-{{loop.index}}" data-value="{{value}}"  onmouseout="counter(this)" onmouseover="resetCounter(this)"> %</span> 
+          <span class="progress-text ms-2 me-1 lang-{{loop.index}}" data-value="{{value}}" onmouseout="counter(this)"
+            onmouseover="resetCounter(this)"> %</span>
         </div>
       </div>
       {% endfor %}
@@ -21,12 +26,34 @@
   </div>
   <hr class="featurette-divider shadow-lg d-none d-md-block my-4">
   <div class="row featurette">
-    <div class="col-12 col-md-3 order-md-2 start-page-text-right mt-0 mt-md-4">
+    <div class="col-12 col-md-4 order-md-1 start-page-img-left mt-0 mt-md-4">
       <h2 class="featurette-heading fw-normal lh-1 mb-3">Commits per day</h2>
       <p class="lead text-body-secondary">This graph shows the github commits per day since project start.</p>
     </div>
-    <div class="col-12 col-md-9 order-md-1 start-page-img-left mb-5 mt-0 mt-md-4">
+    <div class="col-12 col-md-8 order-md-2 start-page-text-right mb-5 mt-0 mt-md-4">
       <canvas class="w-100 p-2 border border-dark-subtle" id="myChart" width="900" height="380"></canvas>
+    </div>
+  </div>
+  <hr class="featurette-divider shadow-lg d-none d-md-block my-4">
+  <div class="row featurette">
+    <div class="col-12 col-md-4 order-md-1 start-page-img-left mt-0 mt-md-4">
+      <h2 class="featurette-heading fw-normal lh-1 mb-3">Timeline</h2>
+      <p class="lead text-body-secondary">All commits since Project start.</p>
+    </div>
+    <div class="col-12 col-md-8 order-md-2 start-page-text-right mb-5 mt-0 mt-md-4">
+      <div class="card border-0">
+        <div class="card-body p-0">
+          <div id="content">
+            <ul class="timeline mx-0 border">
+              {% for key,value in messages %}
+              <li class="event" data-date="{{key|date("d.m.Y")}}">
+                <h3>{{value}}</h3>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

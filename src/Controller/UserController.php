@@ -28,12 +28,14 @@ class UserController extends AbstractController
     {
         $user = $this->getUser();
         $languages = $githubApi->getLanguagesFromGitHubApi();
-        $commits = $githubApi->getCommitsFromGitHubApi();
+        $commits = $githubApi->getCommitsAndDate();
+        $messages = $githubApi->getCommitsAndMessage();
         return $this->render('user/user.html.twig', [
             'title' => 'User',
             'user' => $user,
             'languages' => $languages,
-            'commits' => $commits
+            'commits' => $commits,
+            'messages' => $messages
         ]);
     }
 

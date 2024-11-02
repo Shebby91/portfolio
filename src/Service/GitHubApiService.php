@@ -41,9 +41,9 @@ class GitHubApiService
         });
     }
 
-    public function getCommitsFromGitHubApi(): array
+    public function getFullCommitsData(): array
     {
-        return $this->cache->get('commits', function (CacheItemInterface $cacheItem) {
+        return $this->cache->get('commit_data', function (CacheItemInterface $cacheItem) {
             $cacheItem->expiresAfter(86400);
         
             $allCommits = [];
@@ -60,25 +60,45 @@ class GitHubApiService
                 ]);
         
                 $commits = $response->toArray();
+
                 $allCommits = array_merge($allCommits, $commits);
                 
                 $page++;
             } while (!empty($commits));
         
-            $commitsByDate = [];
-            foreach ($allCommits as $commit) {
-                $date = (new \DateTime($commit['commit']['author']['date']))->format('d.m.Y');
-                if (!isset($commitsByDate[$date])) {
-                    $commitsByDate[$date] = 0;
-                }
-                $commitsByDate[$date]++;
-            }
-
-            $commitDates = implode(', ', array_reverse(array_keys($commitsByDate)));
-
-            $commitsPerDay = implode(', ', array_reverse(array_values($commitsByDate)));
-
-            return ['commitDates' => $commitDates, 'commitsPerDay' => $commitsPerDay];
+            return $allCommits;
         });
+    }
+
+    public function getCommitsAndDate(): array
+    {
+        $allCommits = $this->getFullCommitsData();
+        $commitsByDate = [];
+
+        foreach ($allCommits as $commit) {
+            $date = (new \DateTime($commit['commit']['author']['date']))->format('d.m.Y');
+            if (!isset($commitsByDate[$date])) {
+                $commitsByDate[$date] = 0;
+            }
+            $commitsByDate[$date]++;
+        }
+
+        $commitDates = implode(', ', array_reverse(array_keys($commitsByDate)));
+        $commitsPerDay = implode(', ', array_reverse(array_values($commitsByDate)));
+
+        return ['commitDates' => $commitDates, 'commitsPerDay' => $commitsPerDay];
+    }
+
+    public function getCommitsAndMessage(): array
+    {
+        $allCommits = $this->getFullCommitsData();
+        
+        $commitMessages = [];
+
+        foreach ($allCommits as $commit) {
+            $commitMessages[$commit['commit']['author']['date']] = $commit['commit']['message'];
+        }
+
+        return $commitMessages ;
     }
 }
